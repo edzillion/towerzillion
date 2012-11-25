@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+	<title>TDZillion</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="./assets/css/UI.css">
+</head>
+
+	<body> 
+		<canvas id="Canvas" width="641" height="596" style="position: absolute; left: 27px; top: 0; z-index: 0;"></canvas>
+				
+		<div id="rpanel"></div>
+		<div id="bpanel"></div>
+		<div id="actionpanel">
+			<div id="actiontitle" class="actionpaneltitle"></div>
+			<div id="wavetext">
+				<div id="wavenum" class="actionpaneltext"></div>
+				<div id="nextwave" class="actionpaneltext"></div>
+			</div>
+			<div id="playertext">
+				<div id="gold" class="actionpaneltext"></div>
+				<div id="lives" class="actionpaneltext"></div>
+				<div id="score" class="actionpaneltext"></div>
+			</div>
+			<div id="nextwavebutton"><b>NEXT WAVE ></b></div>
+		</div>
+
+		<script type="text/javascript" src="http://localhost:8080/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="./assets/libs/easeljs-0.5.0.min.js"></script>
+		<script type="text/javascript" src="./assets/libs/ColorFilter.js"></script>
+		<script type="text/javascript" src="./assets/libs/jquery-1.8.2.js"></script>
+		<script type="text/javascript" src="./assets/libs/Point.js"></script>
+		<script type="text/javascript" src="./js/intercept.js"></script>
+		<script type="text/javascript" src="./js/Creeps.js"></script>
+		<script type="text/javascript" src="./js/Bullet.js"></script>
+		<script type="text/javascript" src="./js/Towers.js"></script>
+		<script type="text/javascript" src="./js/Map.js"></script>
+		<script type="text/javascript" src="./js/Level.js"></script>
+		<script type="text/javascript" src="./js/Player.js"></script>
+		<script type="text/javascript" src="./js/Path.js"></script>
+		<script type="text/javascript" src="./js/UI.js"></script>
+		<script type="text/javascript" src="./js/Game.js"></script>
+		<script type="text/javascript" src="./js/main.js"></script>
+		
+		
+	</body>
+</html>

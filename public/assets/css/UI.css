@@ -1,0 +1,167 @@
+#page
+{
+	width: 1000px;
+	height: 1000px;
+}
+
+#rpanel 
+{
+	position: absolute; 
+	left: 687px; 
+	top: 27px;
+}
+
+#bpanel
+{
+	position: absolute; 
+	top:596px;
+	left:27px;
+	height:100px;
+}
+.bottompanelsection
+{
+	width:64px;
+	height:100px;
+	float:left;
+	position: relative;
+	background-image:url('../img/tiles_24bit.png');
+	background-position:-390px -10px;
+}
+
+#actionpanel
+{
+	position: absolute; 
+	top:460px;
+	left:660px;
+	height:200px;
+	width:200px;
+	z-index:1;
+	background-image:url('../img/actionpanelsign.png');
+}
+
+.actionpaneltext
+{
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+	color:white;
+	font-size: 10pt;
+	width:75px;
+}
+
+.actionpaneltitle
+{
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+	color:white;
+	font-size:15pt;
+	margin-top:42px;
+	margin-left:8px;
+	margin-right:17px;
+	width: 100%;
+}
+
+#wavetext
+{
+	margin-left:20px;
+	width:75px;
+	float: left;
+}
+
+#playertext
+{
+
+	margin-right:20px;
+	width:75px;
+	float: right;
+}
+
+#nextwavebutton
+{
+	position: absolute;
+	top:121px;
+	left:53px;
+	width: 100px;
+	height: 18px;
+	border-style: dashed;
+	border-width: 2px;
+	border-color: white;
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+	color:white;
+	font-size: 11pt;
+	padding-left: 4px;
+}
+
+.towerbuttonsection
+{
+	width:150px;
+	height:110px;
+}
+.towerbuttonholder
+{
+	width:75px;
+	height:110px;
+	float:left;
+	position: relative;
+}
+.towerpriceholder
+{
+	width:75px;
+	height:110px;
+	float:left;
+	position: relative;
+}
+.towerbutton
+{
+
+	width:65px;
+	height:110px;
+	margin-left:5px;
+	margin-top:15px;
+	background-image:url('../img/tiles_24bit.png');
+  	background-position:-195px 0px;
+}
+.towerbuttonrollover
+{
+	width:64px;
+	height:100px;
+	position:absolute;
+	top:5px;
+	left:5px;
+	background-image:url('../img/towerbuttonrollover.png');
+  	background-position:0px 0px;
+  	z-index:2;
+}
+.towerimage
+{
+  width:64px;
+  height:100px;
+  background-image:url('../img/towers_64x54.png');
+	position:absolute;
+	top:0px;
+	left:5px;
+}
+.towerprice
+{
+
+	width:65px;
+	height:110px;
+	margin-left:5px;
+	margin-top:15px;
+	background-image:url('../img/tiles_24bit.png');
+  	background-position:-65px 0px;
+}
+.towerpriceimage
+{
+  width:64px;
+  height:64px;
+  background-image:url('../img/towerpricesign.png');
+	position:absolute;
+	top:25px;
+	left:5px;
+}
+.towerpricetext
+{
+	padding-left: 16px;
+	padding-top: 20px;
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+	color:white;
+	font-size: 14pt;
+}

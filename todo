@@ -1,0 +1,26 @@
+todo
+
+- broken bullet shooting 
+ - difference between velocity def in follow and intercept
+
+ - remove overloading array prototypes and use jquery instead
+ - load manifest locally for spritesheets
+
+ - bullet sprites
+- bullet object instead - extend container?
+
+- change creep to be bmpanims themselves - same with other similar classes
+ - creep effects 
+  - on fire
+  - poisoned
+  - crit
+
+- shop towers?
+- factory towers?
+
+- different creep types
+
+- control system
+
+-order of containers on stage
+

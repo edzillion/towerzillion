@@ -1,0 +1,258 @@
+"towers": {
+        "water": [
+            {
+                "name": "drizzler",
+                "type": "water",
+                "damage": 2,
+                "range": 120,
+                "rof": 1000,
+                "bulletspeed": 35,
+                "levelxp": 50,
+                "effect": {
+                    "amount": 10,
+                    "times": 3
+                },
+                "splashrad": null,
+                "cost": 7,
+                "spritesheet": "towers_64x54",
+                "spritesheetframe": 9
+            },
+            {
+                "name": "sprayer",
+                "type": "water",
+                "framewidth": 64,
+                "frameheight": 162,
+                "regx": 32,
+                "regy": 135,
+                "damage": 10,
+                "range": 150,
+                "rof": 200,
+                "bulletspeed": 35,
+                "levelxp": 100,
+                "effect": {
+                    "amount": 10,
+                    "times": 3
+                },
+                "splashrad": null,
+                "cost": 15,
+                "spritesheet": "towers_64x54",
+                "spritesheetframe": 10
+            },
+            {
+                "name": "splasher",
+                "type": "water",
+                "framewidth": 64,
+                "frameheight": 162,
+                "regx": 32,
+                "regy": 135,
+                "damage": 25,
+                "range": 230,
+                "rof": 200,
+                "bulletspeed": 35,
+                "levelxp": null,
+                "effect": {
+                    "amount": 25,
+                    "times": 5
+                },
+                "splashrad": 35,
+                "cost": 50,
+                "spritesheet": "towers_64x54",
+                "spritesheetframe": 12
+            }
+        ],
+        "melee": [
+            {
+                "name": "tickler",
+                "type": "melee",
+                "framewidth": 64,
+                "frameheight": 162,
+                "regx": 32,
+                "regy": 135,
+                "damage": 1,
+                "range": 150,
+                "rof": 450,
+                "bulletspeed": 50,
+                "levelxp": 50,
+                "effect": {
+                    "amount": 1,
+                    "times": 3
+                },
+                "splashrad": 50,
+                "cost": 5,
+                "spritesheet": "towers_64x54",
+                "spritesheetframe": 0
+            },
+            {
+                "name": "slapper",
+                "type": "melee",
+                "framewidth": 64,
+                "frameheight": 162,
+                "regx": 32,
+                "regy": 135,
+                "damage": 2,
+                "range": 210,
+                "rof": 400,
+                "bulletspeed": 50,
+                "levelxp": 100,
+                "effect": {
+                    "amount": 3,
+                    "times": 3
+                },
+                "splashrad": 75,
+                "cost": 10,
+                "spritesheet": "towers_64x54",
+                "spritesheetframe": 1
+            },
+            {
+                "name": "smasher",
+                "type": "melee",
+                "framewidth": 64,
+                "frameheight": 162,
+                "regx": 32,
+                "regy": 135,
+                "damage": 5,
+                "range": 300,
+                "rof": 350,
+                "bulletspeed": 50,
+                "levelxp": null,
+                "effect": {
+                    "amount": 5,
+                    "times": 5
+                },
+                "splashrad": 100,
+                "cost": 25,
+                "spritesheet": "towers_64x54",
+                "spritesheetframe": 2
+            }
+        ],
+        "poison": [
+            {
+                "name": "stinger",
+                "type": "poison",
+                "framewidth": 64,
+                "frameheight": 162,
+                "regx": 32,
+                "regy": 135,
+                "damage": 2,
+                "range": 110,
+                "rof": 1000,
+                "bulletspeed": 35,
+                "levelxp": null,
+                "effect": {
+                    "amount": 1,
+                    "times": 3
+                },
+                "splashrad": null,
+                "cost": 7,
+                "spritesheet": "towers_64x54",
+                "spritesheetframe": 3
+            },
+            {
+                "name": "sickener",
+                "type": "poison",
+                "framewidth": 64,
+                "frameheight": 162,
+                "regx": 32,
+                "regy": 135,
+                "damage": 3,
+                "range": 160,
+                "rof": 300,
+                "bulletspeed": 35,
+                "levelxp": null,
+                "effect": {
+                    "amount": 3,
+                    "times": 5
+                },
+                "splashrad": null,
+                "cost": 15,
+                "spritesheet": "towers_64x54",
+                "spritesheetframe": 4
+            },
+            {
+                "name": "corruptor",
+                "type": "poison",
+                "framewidth": 64,
+                "frameheight": 162,
+                "regx": 32,
+                "regy": 135,
+                "damage": 5,
+                "range": 250,
+                "rof": 300,
+                "bulletspeed": 35,
+                "levelxp": null,
+                "effect": {
+                    "amount": 10,
+                    "times": 5
+                },
+                "splashrad": null,
+                "cost": 75,
+                "spritesheet":"towers_64x54",
+                "spritesheetframe": 5
+            }
+        ],
+        "magic": [
+            {
+                "name": "tricker",
+                "type": "magic",
+                "framewidth": 64,
+                "frameheight": 162,
+                "regx": 32,
+                "regy": 135,
+                "damage": 1,
+                "range": 100,
+                "rof": 500,
+                "bulletspeed": 100,
+                "levelxp": null,
+                "effect": {
+                    "amount": 1,
+                    "times": 2
+                },
+                "splashrad": null,
+                "cost": 10,
+                "spritesheet": "towers_64x54",
+                "spritesheetframe": 6
+            },
+            {
+                "name": "caster",
+                "type": "magic",
+                "framewidth": 64,
+                "frameheight": 162,
+                "regx": 32,
+                "regy": 135,
+                "damage": 3,
+                "range": 140,
+                "rof": 300,
+                "bulletspeed": 35,
+                "levelxp": null,
+                "effect": {
+                    "amount": 3,
+                    "times": 5
+                },
+                "splashrad": null,
+                "cost": 50,
+                "spritesheet": "towers_64x54",
+                "spritesheetframe": 7
+            },
+            {
+                "name": "sorceror",
+                "type": "magic",
+                "framewidth": 64,
+                "frameheight": 162,
+                "regx": 32,
+                "regy": 135,
+                "damage": 5,
+                "range": 200,
+                "rof": 300,
+                "bulletspeed": 35,
+                "levelxp": null,
+                "effect": {
+                    "amount": 10,
+                    "times": 5
+                },
+                "splashrad": null,
+                "cost": 100,
+                "spritesheet": "towers_64x54",
+                "spritesheetframe": 8
+            }
+        ]
+    },

@@ -1,0 +1,436 @@
+{
+    "towers": [
+        {
+            "name": "towers_64x54",
+            "type": "towers",
+            "src": "./assets/img/towers_64x54.png",
+            "framewidth": 64,
+            "frameheight": 162,
+            "regx": 32,
+            "regy": 135
+        }
+    ],
+    "bullets": {
+        "basic": {
+            "name": "basic",
+            "type": "bullets",
+            "src": "./assets/img/bullets-32x32.png",
+            "framewidth": 32,
+            "frameheight": 32,
+            "regx": 0,
+            "regy": 0,
+            "animations": {
+                "basic": [
+                    0,
+                    6,
+                    "basic",
+                    4
+                ],
+                "fire": [
+                    7,
+                    10,
+                    "fire",
+                    4
+                ],
+                "water": [
+                    14,
+                    17,
+                    "water",
+                    4
+                ],
+                "ice": [
+                    21,
+                    23,
+                    "ice",
+                    4
+                ],
+                "poison": [
+                    28,
+                    31,
+                    "poison",
+                    4
+                ]
+            }
+        }
+    },
+    "creeps": [
+        {
+            "name": "orc",
+            "type": "creeps",
+            "src": "./assets/img/orc.png",
+            "framewidth": 25,
+            "frameheight": 32,
+            "regx": 12.5,
+            "regy": 16,
+            "animations": {
+                "up": [
+                    0,
+                    2,
+                    "up",
+                    24
+                ],
+                "right": [
+                    3,
+                    5,
+                    "right",
+                    24
+                ],
+                "down": [
+                    6,
+                    8,
+                    "down",
+                    24
+                ],
+                "left": [
+                    9,
+                    11,
+                    "left",
+                    24
+                ]
+            }
+        },
+        {
+            "name": "wizard",
+            "type": "creeps",
+            "src": "./assets/img/wizard.png",
+            "framewidth": 23,
+            "frameheight": 32,
+            "regx": 11.5,
+            "regy": 16,
+            "animations": {
+                "left": [
+                    0,
+                    7,
+                    "left",
+                    16
+                ],
+                "right": [
+                    8,
+                    15,
+                    "right",
+                    16
+                ],
+                "up": [
+                    16,
+                    23,
+                    "up",
+                    16
+                ],
+                "down": [
+                    24,
+                    31,
+                    "down",
+                    16
+                ]
+            }
+        }
+    ],
+    "terrain": [
+        {
+            "name": "32x32",
+            "type": "terrain",
+            "src": "./assets/img/tiles_24bit.png",
+            "framewidth": 65,
+            "frameheight": 110,
+            "regx": 0,
+            "regy": 32
+        },
+        {
+            "name": "64x54",
+            "type": "terrain",
+            "src": "./assets/img/tiles_24bit.png",
+            "framewidth": 65,
+            "frameheight": 110,
+            "regx": 0,
+            "regy": 32
+        }
+    ],
+    "gamedata": {
+        "towers": {
+            "water": [
+                {
+                    "name": "drizzler",
+                    "type": "water",
+                    "damage": 2,
+                    "framewidth": 64,
+                    "frameheight": 162,
+                    "regx": 32,
+                    "regy": 135,
+                    "range": 120,
+                    "rof": 1000,
+                    "bulletspeed": 2,
+                    "bulletfade": 300,
+                    "levelxp": 50,
+                    "effect": {
+                        "amount": 10,
+                        "times": 3
+                    },
+                    "splashrad": null,
+                    "cost": 7,
+                    "spritesheet": "towers_64x54",
+                    "spritesheetframe": 9,
+                    "bulletsprite": "basic"
+                },
+                {
+                    "name": "sprayer",
+                    "type": "water",
+                    "framewidth": 64,
+                    "frameheight": 162,
+                    "regx": 32,
+                    "regy": 135,
+                    "damage": 10,
+                    "range": 150,
+                    "rof": 200,
+                    "bulletspeed": 4,
+                    "bulletfade": 300,
+                    "levelxp": 100,
+                    "effect": {
+                        "amount": 10,
+                        "times": 3
+                    },
+                    "splashrad": null,
+                    "cost": 15,
+                    "spritesheet": "towers_64x54",
+                    "spritesheetframe": 10,
+                    "bulletsprite": "water"
+                },
+                {
+                    "name": "splasher",
+                    "type": "water",
+                    "framewidth": 64,
+                    "frameheight": 162,
+                    "regx": 32,
+                    "regy": 135,
+                    "damage": 25,
+                    "range": 230,
+                    "rof": 200,
+                    "bulletspeed": 8,
+                    "bulletfade": 300,
+                    "levelxp": null,
+                    "effect": {
+                        "amount": 25,
+                        "times": 5
+                    },
+                    "splashrad": 35,
+                    "cost": 50,
+                    "spritesheet": "towers_64x54",
+                    "spritesheetframe": 12,
+                    "bulletsprite": "water"
+                }
+            ],
+            "melee": [
+                {
+                    "name": "tickler",
+                    "type": "melee",
+                    "framewidth": 64,
+                    "frameheight": 162,
+                    "regx": 32,
+                    "regy": 135,
+                    "damage": 1,
+                    "range": 150,
+                    "rof": 5000,
+                    "bulletspeed": 3,
+                    "bulletfade": 200,
+                    "levelxp": 50,
+                    "effect": {
+                        "amount": 1,
+                        "times": 3
+                    },
+                    "splashrad": null,
+                    "cost": 5,
+                    "spritesheet": "towers_64x54",
+                    "spritesheetframe": 0,
+                    "bulletsprite": "basic"
+                },
+                {
+                    "name": "slapper",
+                    "type": "melee",
+                    "framewidth": 64,
+                    "frameheight": 162,
+                    "regx": 32,
+                    "regy": 135,
+                    "damage": 2,
+                    "range": 210,
+                    "rof": 400,
+                    "bulletspeed": 6,
+                    "bulletfade": 300,
+                    "levelxp": 100,
+                    "effect": {
+                        "amount": 3,
+                        "times": 3
+                    },
+                    "splashrad": null,
+                    "cost": 10,
+                    "spritesheet": "towers_64x54",
+                    "spritesheetframe": 1,
+                    "bulletsprite": "ice"
+                },
+                {
+                    "name": "smasher",
+                    "type": "melee",
+                    "framewidth": 64,
+                    "frameheight": 162,
+                    "regx": 32,
+                    "regy": 135,
+                    "damage": 5,
+                    "range": 300,
+                    "rof": 350,
+                    "bulletspeed": 10,
+                    "bulletfade": 300,
+                    "levelxp": null,
+                    "effect": {
+                        "amount": 5,
+                        "times": 5
+                    },
+                    "splashrad": null,
+                    "cost": 25,
+                    "spritesheet": "towers_64x54",
+                    "spritesheetframe": 2,
+                    "bulletsprite": "ice"
+                }
+            ],
+            "poison": [
+                {
+                    "name": "stinger",
+                    "type": "poison",
+                    "framewidth": 64,
+                    "frameheight": 162,
+                    "regx": 32,
+                    "regy": 135,
+                    "damage": 2,
+                    "range": 110,
+                    "rof": 1000,
+                    "bulletspeed": 2,
+                    "bulletfade": 300,
+                    "levelxp": null,
+                    "effect": {
+                        "amount": 1,
+                        "times": 3
+                    },
+                    "splashrad": null,
+                    "cost": 7,
+                    "spritesheet": "towers_64x54",
+                    "spritesheetframe": 3,
+                    "bulletsprite": "basic"
+                },
+                {
+                    "name": "sickener",
+                    "type": "poison",
+                    "framewidth": 64,
+                    "frameheight": 162,
+                    "regx": 32,
+                    "regy": 135,
+                    "damage": 3,
+                    "range": 160,
+                    "rof": 300,
+                    "bulletspeed": 4,
+                    "bulletfade": 300,
+                    "levelxp": null,
+                    "effect": {
+                        "amount": 3,
+                        "times": 5
+                    },
+                    "splashrad": null,
+                    "cost": 15,
+                    "spritesheet": "towers_64x54",
+                    "spritesheetframe": 4,
+                    "bulletsprite": "poison"
+                },
+                {
+                    "name": "corruptor",
+                    "type": "poison",
+                    "framewidth": 64,
+                    "frameheight": 162,
+                    "regx": 32,
+                    "regy": 135,
+                    "damage": 5,
+                    "range": 250,
+                    "rof": 300,
+                    "bulletspeed": 8,
+                    "bulletfade": 400,
+                    "levelxp": null,
+                    "effect": {
+                        "amount": 10,
+                        "times": 5
+                    },
+                    "splashrad": null,
+                    "cost": 75,
+                    "spritesheet": "towers_64x54",
+                    "spritesheetframe": 5,
+                    "bulletsprite": "poison"
+                }
+            ],
+            "magic": [
+                {
+                    "name": "tricker",
+                    "type": "magic",
+                    "framewidth": 64,
+                    "frameheight": 162,
+                    "regx": 32,
+                    "regy": 135,
+                    "damage": 2,
+                    "range": 100,
+                    "rof": 4000,
+                    "bulletspeed": 1,
+                    "bulletfade": 500,
+                    "levelxp": null,
+                     "effect": {
+                        "amount": 1,
+                        "times": 3
+                    },
+                    "splashrad": 50,
+                    "cost": 10,
+                    "spritesheet": "towers_64x54",
+                    "spritesheetframe": 6,
+                    "bulletsprite": "fire"
+                },
+                {
+                    "name": "caster",
+                    "type": "magic",
+                    "framewidth": 64,
+                    "frameheight": 162,
+                    "regx": 32,
+                    "regy": 135,
+                    "damage": 5,
+                    "range": 140,
+                    "rof": 300,
+                    "bulletspeed": 2,
+                    "bulletfade": 500,
+                    "levelxp": null,
+                    "effect": {
+                        "amount": 3,
+                        "times": 5
+                    },
+                    "splashrad": 50,
+                    "cost": 50,
+                    "spritesheet": "towers_64x54",
+                    "spritesheetframe": 7,
+                    "bulletsprite": "fire"
+                },
+                {
+                    "name": "sorceror",
+                    "type": "magic",
+                    "framewidth": 64,
+                    "frameheight": 162,
+                    "regx": 32,
+                    "regy": 135,
+                    "damage": 10,
+                    "range": 200,
+                    "rof": 300,
+                    "bulletspeed": 4,
+                    "bulletfade": 600,
+                    "levelxp": null,
+                    "effect": {
+                        "amount": 10,
+                        "times": 5
+                    },
+                    "splashrad": null,
+                    "cost": 100,
+                    "spritesheet": "towers_64x54",
+                    "spritesheetframe": 8,
+                    "bulletsprite": "fire"
+                }
+            ]
+        }
+    }
+}
