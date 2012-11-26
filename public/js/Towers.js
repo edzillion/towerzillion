@@ -306,11 +306,10 @@ towerprot.hit = function (currbullet) {
         console.log('crit!',dmg);
       }*/
 
-      var creepstokill = Array();
       for (var i=0; i<game.level.creeps.activecreeps.length; i++) {
         var creep = game.level.creeps.activecreeps[i];
         var localcoords = currbullet.globalToLocal(creep.x,creep.y);
-        var hit = currbullet.hitTest(localcoords.x,localcoords.y);
+        var hit = currbullet.splash.hitTest(localcoords.x,localcoords.y);
 
         if (hit) {
           if(creep.hit(this.damage)) {
@@ -325,6 +324,20 @@ towerprot.hit = function (currbullet) {
       }
     }
     break;
+    case 'poison': {
+
+      if (currbullet.target.hit(this.damage)) {
+        //true means we have killed the target      
+        this.addXP(currbullet.target.xp);
+        this.killcount++;
+        this.currenttarget = null;
+      }       
+      //false means the creep is still alive. if so, then do effect
+      else
+        currbullet.target.affect(this, this.effect.amount, this.effect.times);
+  
+    }
+    break;
   }
   currbullet.target = null;
 };
@@ -332,8 +345,6 @@ towerprot.hit = function (currbullet) {
 towerprot.fadeBullet = function () {
 
   var bullet = this.activebullets.shift();
-  if (bullet.splash)
-    bullet.splash.visible = true;
   var mybullets = this.mybullets;
   var interval = setInterval(function(){
       bullet.alpha-=.1;

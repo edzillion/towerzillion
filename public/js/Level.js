@@ -81,13 +81,55 @@ Level.prototype.preloadGraphics = function() {
     img.data = this.graphicsdata[i];
     img.onload = function() {
 
+      var anims = this.data.animations;
+      var imgArray = Array();
+      imgArray.push(this);
+      if (this.data.type == 'creeps') {
+        var redfilter = new createjs.ColorFilter(1,0,0,1);
+        var greenfilter = new createjs.ColorFilter(0,1,0,1);
+        var bluefilter = new createjs.ColorFilter(0,0,1,1);
+        var rbmp = new createjs.Bitmap(this);
+        var gbmp = new createjs.Bitmap(this);
+        var bbmp = new createjs.Bitmap(this);
+        rbmp.filters = [redfilter];
+        gbmp.filters = [greenfilter];
+        bbmp.filters = [bluefilter];
+        rbmp.cache(0, 0, this.width, this.height);
+        gbmp.cache(0, 0, this.width, this.height);
+        bbmp.cache(0, 0, this.width, this.height);
+        var rresult = rbmp.cacheCanvas;
+        rresult.name = 'red';
+        imgArray.push(rresult);
+        var gresult = gbmp.cacheCanvas;
+        gresult.name = 'green';
+        imgArray.push(gresult);     
+        var bresult = bbmp.cacheCanvas;
+        bresult.name = 'blue';
+        imgArray.push(bresult);
+
+        //make filtered animations
+        for (var anim in this.data.animations) {
+          // i = 1 because we should leave the basic animations alone
+          for (var i = 1; i < imgArray.length; i++) {
+            var animname = imgArray[i].name+anim;
+            var animdata = Array();
+            var animdata = this.data.animations[anim].slice();
+            animdata[0] += this.data.frames * i; //offset to point anims to filtered spritesheets
+            animdata[1] += this.data.frames * i;
+            animdata[2] = animname;
+            anims[animname] = animdata;
+          }; 
+        }
+      }
+      
       var spritesheet = new createjs.SpriteSheet({
-        images: [this],
+        images: imgArray,
         frames: {width:this.data.framewidth, height:this.data.frameheight, regX:this.data.regx, regY:this.data.regy},
-        animations: this.data.animations
+        animations: anims
       });
       spritesheet.name = this.data.name;
       spritesheet.type = this.data.type;
+
 
       //there are multiple creeps per level
       if (this.data.type == 'creeps')                

@@ -18,6 +18,7 @@ var Game = function(canvas) {
   this.graphics = null;
   this.player = new Player();
   this.UI = new UI(); 
+  this.date = new Date(); 
 };
 
 Game.MESSAGE_TYPE_LOAD_LEVEL = 1;

@@ -60,6 +60,7 @@
             "src": "./assets/img/orc.png",
             "framewidth": 25,
             "frameheight": 32,
+            "frames": 12,
             "regx": 12.5,
             "regy": 16,
             "animations": {
@@ -95,6 +96,7 @@
             "src": "./assets/img/wizard.png",
             "framewidth": 23,
             "frameheight": 32,
+            "frames": 32,
             "regx": 11.5,
             "regy": 16,
             "animations": {
@@ -304,14 +306,14 @@
                     "bulletfade": 300,
                     "levelxp": null,
                     "effect": {
-                        "amount": 1,
+                        "amount": 0.1,
                         "times": 3
                     },
                     "splashrad": null,
                     "cost": 7,
                     "spritesheet": "towers_64x54",
                     "spritesheetframe": 3,
-                    "bulletsprite": "basic"
+                    "bulletsprite": "poison"
                 },
                 {
                     "name": "sickener",
