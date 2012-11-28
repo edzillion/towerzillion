@@ -12,12 +12,12 @@
 	<body> 
 		<canvas id="Canvas" width="1400" height="900" style="position: absolute; left: 27px; top: 0; z-index: 0;"></canvas>
 				
-		<div id="rpanel"></div>
+		<div id="uipanel"></div>
 		<div id="bpanel"></div>
 
 
-		
-		<button id="remove_button">Remove Decor</button>
+		<button id="mode_button">Mode: Loading ...</button>
+
 		<button id="clear_button">Clear</button>
 		<button id="save_button">Save</button>
 		<button id="load_button">Load</button>
@@ -58,7 +58,9 @@
 			  this.socket = new io.connect('http://localhost:8080');
 			  this.stage = new createjs.Stage(document.getElementById("Canvas"));
 
-			  this.state = 'loading';
+			  this.mode = ['terrain','decor','waves','play'];
+			  this.modeiter = 0;
+
 			  this.manifest = null;
 
 				this.map = null;
@@ -66,7 +68,10 @@
 			  this.cursor.name = 'Cursor Container';
 			  this.cursor.alpha = .6;
 			  this.UI = new createjs.Container();
-			  this.UI.name = 'UI Container';
+			  this.UI.name = 'Panel Container';
+
+			  this.decorpanel = null;
+			  this.wavepanel = new createjs.Container();
 
 			  this.stage.addChild(this.map);
 			  this.stage.addChild(this.decor);
@@ -108,8 +113,7 @@
 			  );
 
 			  gfx.done( function(){
-			  	game.buildDecorPanel();
-			  	game.buildDialogs();
+			  	game.buildMainUI();
 			  	game.buildBlankMap();
 			  	game.start();
 			  });
@@ -201,57 +205,9 @@
 	  		return dfr.promise();
 			};
 
-			LevelBuilder.prototype.buildDecorPanel = function () {
+			//UI ############################################################################
 
-			 	smallanchor = new Point(700,90);
-			 	medanchor = new Point(700,170);
-			 	biganchor = new Point(700,500);
-
-			 	decorpanel = {size: new Point(630,700)}
-
-			  //first the small tiles
-			  for (var i = 0; i < this.graphics.spritesheets.decor.length; i++) {
-			  	var sheet = this.graphics.spritesheets.decor[i]
-			  	var amt = sheet.getNumFrames();
-			  	for (var j = 0; j < amt; j++) {
-			  		var tempc = new createjs.Container();
-			  		var img = new createjs.SpriteSheetUtils.extractFrame(sheet, j);
-			  		var sprite = new createjs.Bitmap(img);
-			  		tempc.frame = j;
-			  		tempc.sheet = sheet.name;
-			  		var anchor;
-			  		switch (sheet.name) {
-			  			case 'small': anchor = smallanchor;
-			  			break;
-			  			case 'medium': anchor = medanchor;
-			  			break;
-			  			case 'large': anchor = biganchor;
-			  			break;
-			  		}				  		
-
-			  		var rightsidex = sheet._frameWidth * j;
-			  		var row = Math.floor(rightsidex/decorpanel.size.x);
-			  		var col = Math.floor((rightsidex%decorpanel.size.x)/sheet._frameWidth);
-
-						tempc.regX = sheet._frameWidth/2;
-			  		tempc.regY = sheet._frameHeight/2;
-
-			  		tempc.x = anchor.x + (col * sheet._frameWidth) + (sheet._frameWidth/2);
-		  			tempc.y = anchor.y + (row * sheet._frameHeight) + (sheet._frameHeight/2);		  		
-			  		tempc.onClick = game.clickUISprite;
-
-			  		//background
-			  		var border = new createjs.Shape();
-			  		border.graphics.beginFill("rgba(0,0,0,1)").rect(0, 0, sheet._frameWidth, sheet._frameHeight);
-			  		border.graphics.beginFill("rgba(255,255,255,1)").rect(1, 1, sheet._frameWidth-2, sheet._frameHeight-2);
-			  		tempc.addChild(border);
-			  		tempc.addChild(sprite);
-			  		game.UI.addChild(tempc);
-			  	}	
-				}
-			};
-
-			LevelBuilder.prototype.buildDialogs = function () {
+			LevelBuilder.prototype.buildMainUI = function () {
 
   			var savedialog = document.createElement('div');
   			$(savedialog).addClass('dialog_window');
@@ -301,24 +257,6 @@
          		create_dialog.dialog("open");
 				});
 
-				$('#remove_button').button().click( function() {
-					if (game.state == 'placing') {
-						game.state = 'removing';
-						console.log('STATE: removing');
-						document.body.style.cursor='crosshair';
-						game.stage.onMouseMove = game.cursorHandler;
-			  		game.stage.onClick = game.cursorClickHandler;
-			  		$(this).button("option", "label", "Place Decor");
-				  }
-				  else if (game.state == 'removing') {
-						game.state = 'placing';
-						console.log('STATE: placing');
-						document.body.style.cursor='pointer';
-						game.stage.onMouseMove = game.cursorHandler;
-				  	game.stage.onClick = game.cursorClickHandler;
-				  	$(this).button("option", "label", "Remove Decor");
-			  	}
-				});
 
 				$('#clear_button').button().click( function() {
 					game.map.decor.removeAllChildren();
@@ -332,37 +270,61 @@
 					game.stage.onMouseMove = null;
 			  	game.stage.onClick = null;
 				});
-			};
 
-			LevelBuilder.prototype.buildBlankMap = function () {
-				console.log('build Blank Map');
-				game.stage.removeChild(this.map);
-				this.map = new Map();
-				for (var i = 0; i < this.map.terrain.children.length; i++) {
-					this.map.terrain.children[i].onClick = game.clickTile;
-				}	
-			};
+				$('#mode_button').button({label:'Mode: Terrain'}).click( function() {
+					
+					game.modeiter++;
+					if (game.modeiter > game.mode.length-1)
+						game.modeiter = 0;	
+					switch(game.mode[game.modeiter]) {
+						case 'terrain': { 
+							$(this).css('color', 'white');
+							$(this).css('background', 'blue');
+							$(this).css('border-color', 'blue');
+							$(this).button("option", "label", "Mode: Terrain");
+							game.map.decor.visible = false;
 
-			LevelBuilder.prototype.clickTile = function (event) {
-				var localx = event.stageX % 64;
-				if (localx > 32) {
-					if (this.frame == 9)
-						this.frame = 0
-					else
-						++this.frame
+							for (var i = 0; i < game.map.terrain.children.length; i++) {
+								game.map.terrain.children[i].onClick = game.clickTile;
+							}
+						}
+						break;
+						case 'decor': {
+							$(this).css('color', 'white');
+							$(this).css('background', 'green');
+							$(this).css('border-color', 'green');
+							$(this).button("option", "label", "Mode: Decor");
+							game.map.decor.visible = true;
 
-					var newframe = game.graphics.spritesheets.terrain.getFrame(this.frame);
-					this.sourceRect = newframe.rect;
-				}
-				else {
-					if (this.frame == 0)
-						this.frame = 9
-					else
-						--this.frame
-
-					var newframe = game.graphics.spritesheets.terrain.getFrame(this.frame);
-					this.sourceRect = newframe.rect;
-				}
+							for (var i = 0; i < game.map.terrain.children.length; i++) {
+								game.map.terrain.children[i].onClick = null;
+							}
+							$('#uipanel').children().show();
+							if (!game.decorpanel)
+								game.buildDecorPanel();
+							else
+								game.decorpanel.visible = true;
+						}
+						break;
+						case 'waves': {
+							$(this).css('color', 'white');
+							$(this).css('background', 'red');
+							$(this).css('border-color', 'red');
+							$(this).button("option", "label", "Mode: Waves");
+							game.decorpanel.visible = false;
+							$('#uipanel').children().hide();
+						}
+						break;
+						case 'play': {
+							$(this).css('color', 'white');
+							$(this).css('background', '#0073EA');
+							$(this).css('border-color', '#0073EA');
+							$(this).button("option", "label", "Mode: Play");
+							//build wave panel
+						}
+						break;
+					}
+				});
 			};
 
 			LevelBuilder.prototype.saveClick = function(){
@@ -370,105 +332,6 @@
 				var mapname = $('#new_map_name').val();
 				game.saveToDB(mapname);
 			};
-
-			LevelBuilder.prototype.loadClick = function(){
-
-				var dfr = new $.Deferred();
-				document.body.style.cursor='wait';
-				var id = $(game.loadselected).attr('id');
-				game.socket.emit('getmapbyid', id);
-
-			  game.socket.on('getmapbyid', function (gamedata) {
-
-			    game.mapdata = gamedata[0].level;
-			    
-			    game.stage.removeChild(game.map);
-			    game.map = new Map(game.mapdata);
-
-			    for (var i = 0; i < game.map.terrain.children.length; i++) {
-						game.map.terrain.children[i].onClick = game.clickTile;
-					};	
-			    $(game.currentdialog).dialog('close');
-			    document.body.style.cursor='default';
-			    dfr.resolve();
-			  });
-			  return dfr.promise();
-			};
-
-			LevelBuilder.prototype.clickUISprite = function (event) {
-
-				console.log('STATE: placing');
-				game.state = 'placing';
-				document.body.style.cursor='pointer';
-
-				game.cursor.removeAllChildren();
-				var newsprite = this.clone(true);
-				newsprite.onClick = null;
-
-				newsprite.removeChildAt(0);
-
-				newsprite.frame = this.frame;
-				newsprite.sheet = this.sheet;
-				newsprite.x = 0;
-				newsprite.y = 0;
-				game.cursor.addChild(newsprite);
-
-				game.stage.onMouseMove = game.cursorHandler;
-			  game.stage.onClick = game.cursorClickHandler;
-			};
-
-			LevelBuilder.prototype.cursorHandler = function (event) {
-
-			  game.cursor.x = event.stageX;
-			  game.cursor.y = event.stageY;				  
-			};
-		
-			LevelBuilder.prototype.cursorClickHandler = function (event) {
-
-		  	if (event.stageX < game.map.mapoffset.x || event.stageY < game.map.mapoffset.y || event.stageX > 640 || event.stageY > 700) {
-		    	game.stage.onMouseMove = null;
-		  		game.stage.onClick = null;
-		  		game.state = '';
-		    	return;
-				}
-				if (game.state == 'removing') {
-					if (event.stageX < game.map.mapoffset.x || event.stageY < game.map.mapoffset.y || event.stageX > 640 || event.stageY > 700) {				
-						game.stage.onMouseMove = null;
-				  		game.stage.onClick = null;
-				  		document.body.style.cursor='default';
-						return;
-					}
-
-			  	var removedsprite = game.cursor.getChildAt(0);
-
-      		for (var i=0; i<game.map.decor.children.length; i++) {
-				 		var decor = game.map.decor.children[i];
-  					var localcoords = decor.globalToLocal(event.stageX, event.stageY);
-  					var hit = decor.hitTest(localcoords.x,localcoords.y);
-
-  					if (hit)
-  						game.map.decor.removeChild(decor);
-  				}
-				}
-
-			  if (game.state == 'placing') {
-
-			  	if (!game.cursor.getChildAt(0))
-			  		return;
-			    var placedsprite = game.cursor.getChildAt(0);
-			    placedsprite.x = event.stageX;
-			    placedsprite.y = event.stageY;
-
-			  	game.map.decor.addChild(placedsprite);
-
-				  game.stage.onMouseMove = null;
-				  game.stage.onClick = null;
-				  game.cursor.removeAllChildren();
-				}
-			};
-
-
-
 
   		LevelBuilder.prototype.saveToDB = function (mapname) {	  
 
@@ -499,6 +362,30 @@
 			  return dfr.promise();
   		};
 
+			LevelBuilder.prototype.loadClick = function(){
+
+				var dfr = new $.Deferred();
+				document.body.style.cursor='wait';
+				var id = $(game.loadselected).attr('id');
+				game.socket.emit('getmapbyid', id);
+
+			  game.socket.on('getmapbyid', function (gamedata) {
+
+			    game.mapdata = gamedata[0].level;
+			    
+			    game.stage.removeChild(game.map);
+			    game.map = new Map(game.mapdata);
+
+			    for (var i = 0; i < game.map.terrain.children.length; i++) {
+						game.map.terrain.children[i].onClick = game.clickTile;
+					};	
+			    $(game.currentdialog).dialog('close');
+			    document.body.style.cursor='default';
+			    dfr.resolve();
+			  });
+			  return dfr.promise();
+			};
+
   		LevelBuilder.prototype.openLoadDialog = function () {
 
 			  game.socket.emit('getsavedmaps');
@@ -516,7 +403,176 @@
   					}
 			  	});
 		  	});
-			};	  		
+			};	
+
+			LevelBuilder.prototype.buildBlankMap = function () {
+				console.log('build Blank Map');
+				game.stage.removeChild(this.map);
+				this.map = new Map();	
+			};
+
+			//TERRAIN ############################################################################
+
+			LevelBuilder.prototype.clickTile = function (event) {
+				var localx = event.stageX % 64;
+				if (localx > 32) {
+					if (this.frame == 9)
+						this.frame = 0
+					else
+						++this.frame
+
+					var newframe = game.graphics.spritesheets.terrain.getFrame(this.frame);
+					this.sourceRect = newframe.rect;
+				}
+				else {
+					if (this.frame == 0)
+						this.frame = 9
+					else
+						--this.frame
+
+					var newframe = game.graphics.spritesheets.terrain.getFrame(this.frame);
+					this.sourceRect = newframe.rect;
+				}
+			};
+
+
+			//DECOR ############################################################################
+
+			LevelBuilder.prototype.buildDecorPanel = function () {
+
+				this.decorpanel = new createjs.Container();
+
+				//buttons
+				var placebutton = document.createElement('div');
+				$(placebutton).attr('id', 'place_button');
+				$(placebutton).text('Place Decor');
+				$(placebutton).button().click( function() {	
+					document.body.style.cursor='pointer';
+					game.stage.onMouseMove = null;
+		  		game.stage.onClick = null;
+			  });
+				$(placebutton).appendTo('#uipanel');
+
+  				//buttons
+				var rembutton = document.createElement('div');
+				$(rembutton).attr('id', 'remove_button');
+				$(rembutton).text('Remove Decor');
+				$(rembutton).button().click( function() {	
+					document.body.style.cursor='crosshair';
+					game.stage.onMouseMove = null;
+		  		game.stage.onClick = game.removeClickHandler;
+			  });
+				$(rembutton).appendTo('#uipanel');
+
+			 	var smallanchor = new Point(700,120);
+			 	var medanchor = new Point(700,180);
+			 	var biganchor = new Point(700,480);
+
+			 	var decorpanel = {size: new Point(630,700)};
+
+			  //first the small tiles
+			  for (var i = 0; i < this.graphics.spritesheets.decor.length; i++) {
+			  	var sheet = this.graphics.spritesheets.decor[i]
+			  	var amt = sheet.getNumFrames();
+			  	for (var j = 0; j < amt; j++) {
+			  		var tempc = new createjs.Container();
+			  		var img = new createjs.SpriteSheetUtils.extractFrame(sheet, j);
+			  		var sprite = new createjs.Bitmap(img);
+			  		tempc.frame = j;
+			  		tempc.sheet = sheet.name;
+			  		var anchor;
+			  		switch (sheet.name) {
+			  			case 'small': anchor = smallanchor;
+			  			break;
+			  			case 'medium': anchor = medanchor;
+			  			break;
+			  			case 'large': anchor = biganchor;
+			  			break;
+			  		}				  		
+
+			  		var rightsidex = sheet._frameWidth * j;
+			  		var row = Math.floor(rightsidex/decorpanel.size.x);
+			  		var col = Math.floor((rightsidex%decorpanel.size.x)/sheet._frameWidth);
+
+						tempc.regX = sheet._frameWidth/2;
+			  		tempc.regY = sheet._frameHeight/2;
+
+			  		tempc.x = anchor.x + (col * sheet._frameWidth) + (sheet._frameWidth/2);
+		  			tempc.y = anchor.y + (row * sheet._frameHeight) + (sheet._frameHeight/2);		  		
+			  		tempc.onClick = game.clickDecorSprite;
+
+			  		//background
+			  		var border = new createjs.Shape();
+			  		border.graphics.beginFill("rgba(0,0,0,1)").rect(0, 0, sheet._frameWidth, sheet._frameHeight);
+			  		border.graphics.beginFill("rgba(255,255,255,1)").rect(1, 1, sheet._frameWidth-2, sheet._frameHeight-2);
+			  		tempc.addChild(border);
+			  		tempc.addChild(sprite);
+			  		this.decorpanel.addChild(tempc)			  		
+			  	}	
+				}
+				game.UI.addChild(this.decorpanel);
+			};
+
+			LevelBuilder.prototype.clickDecorSprite = function (event) {
+
+				document.body.style.cursor='pointer';
+
+				game.cursor.removeAllChildren();
+				var newsprite = this.clone(true);
+				newsprite.onClick = null;
+
+				newsprite.removeChildAt(0);
+
+				newsprite.frame = this.frame;
+				newsprite.sheet = this.sheet;
+				newsprite.x = 0;
+				newsprite.y = 0;
+				game.cursor.addChild(newsprite);
+
+				game.stage.onMouseMove = game.cursorHandler;
+			  game.stage.onClick = game.placeClickHandler;
+			};
+
+			LevelBuilder.prototype.placeClickHandler = function (event) {
+
+		  	if (event.stageX < game.map.mapoffset.x || event.stageY < game.map.mapoffset.y || event.stageX > 640 || event.stageY > 640) {
+		    	return;
+				}
+
+				if (!game.cursor.getChildAt(0))
+			  		return;
+
+		    var placedsprite = game.cursor.getChildAt(0);
+		    placedsprite.x = event.stageX;
+		    placedsprite.y = event.stageY;
+
+		  	game.map.decor.addChild(placedsprite);
+
+			  game.stage.onMouseMove = null;
+			  game.stage.onClick = null;
+			  game.cursor.removeAllChildren();
+			};
+
+			LevelBuilder.prototype.removeClickHandler = function (event) {
+			  	//var removedsprite = game.cursor.getChildAt(0);
+
+      		for (var i=0; i<game.map.decor.children.length; i++) {
+				 		var decor = game.map.decor.children[i];
+  					var localcoords = decor.globalToLocal(event.stageX, event.stageY);
+  					var hit = decor.hitTest(localcoords.x,localcoords.y);
+
+  					if (hit)
+  						game.map.decor.removeChild(decor);
+  				}	
+			};
+
+			// GENERAL ############################################################################
+
+			LevelBuilder.prototype.cursorHandler = function (event) {
+
+			  game.cursor.x = event.stageX;
+			  game.cursor.y = event.stageY;				  
+			};
 
 	    String.prototype.splice = function( idx, rem, s ) {
 

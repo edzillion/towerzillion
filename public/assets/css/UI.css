@@ -195,17 +195,41 @@ position: absolute;
 	z-index: 1;
 }
 
-#remove_button {
+
+
+#mode_button {
 	position: absolute; 
 	left: 724px; 
 	top: 15px; 
 	z-index: 1;
 }
 
+
+
 #clear_handler {
 	position: absolute; 
 	left: 1200px; 
 	top: 15px; 
+	z-index: 1;
+}
+
+#uipanel {
+	position:absolute;
+	left: 724px; 
+	top: 64px; 
+}
+
+#place_button {
+	position: relative; 
+	margin-left: 0px; 
+	margin-top: 0px; 
+	z-index: 1;
+}
+
+#remove_button {
+	position: relative; 
+	left: 15px; 
+	top: 0px; 
 	z-index: 1;
 }
 
