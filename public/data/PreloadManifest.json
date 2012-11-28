@@ -55,7 +55,7 @@
     },
     "creeps": [
         {
-            "name": "orc",
+            "name": "half orc",
             "type": "creeps",
             "src": "./assets/img/orc.png",
             "framewidth": 25,
@@ -91,7 +91,7 @@
             }
         },
         {
-            "name": "wizard",
+            "name": "green wizard",
             "type": "creeps",
             "src": "./assets/img/wizard.png",
             "framewidth": 23,
@@ -125,18 +125,297 @@
                     16
                 ]
             }
+        },
+        {
+            "name": "anime ranger",
+            "type": "creeps",
+            "src": "./assets/img/orc.png",
+            "framewidth": 32,
+            "frameheight": 32,
+            "frames": 12,
+            "regx": 16,
+            "regy": 16,
+            "animations": {
+                "down": [
+                    0,
+                    2,
+                    "down",
+                    24
+                ],
+                "left": [
+                    12,
+                    14,
+                    "left",
+                    24
+                ],
+                "right": [
+                    24,
+                    26,
+                    "right",
+                    24
+                ],
+                "up": [
+                    36,
+                    38,
+                    "up",
+                    24
+                ]
+            }
+        },
+        {
+            "name": "anime warlock",
+            "type": "creeps",
+            "src": "./assets/img/orc.png",
+            "framewidth": 32,
+            "frameheight": 32,
+            "frames": 12,
+            "regx": 16,
+            "regy": 16,
+            "animations": {
+                "down": [
+                    3,
+                    5,
+                    "down",
+                    24
+                ],
+                "left": [
+                    15,
+                    17,
+                    "left",
+                    24
+                ],
+                "right": [
+                    27,
+                    29,
+                    "right",
+                    24
+                ],
+                "up": [
+                    39,
+                    41,
+                    "up",
+                    24
+                ]
+            }
+        },
+        {
+            "name": "anime diplomat",
+            "type": "creeps",
+            "src": "./assets/img/orc.png",
+            "framewidth": 25,
+            "frameheight": 32,
+            "frames": 12,
+            "regx": 12.5,
+            "regy": 16,
+            "animations": {
+                "down": [
+                    6,
+                    8,
+                    "down",
+                    24
+                ],
+                "left": [
+                    18,
+                    20,
+                    "left",
+                    24
+                ],
+                "right": [
+                    30,
+                    32,
+                    "right",
+                    24
+                ],
+                "up": [
+                    42,
+                    44,
+                    "up",
+                    24
+                ]
+            }
+        },
+        {
+            "name": "anime arcangel",
+            "type": "creeps",
+            "src": "./assets/img/orc.png",
+            "framewidth": 32,
+            "frameheight": 32,
+            "frames": 12,
+            "regx": 16,
+            "regy": 16,
+            "animations": {
+                "down": [
+                    9,
+                    11,
+                    "down",
+                    24
+                ],
+                "left": [
+                    21,
+                    23,
+                    "left",
+                    24
+                ],
+                "right": [
+                    33,
+                    35,
+                    "right",
+                    24
+                ],
+                "up": [
+                    45,
+                    47,
+                    "up",
+                    24
+                ]
+            }
+        },
+        {
+            "name": "anime priestess",
+            "type": "creeps",
+            "src": "./assets/img/orc.png",
+            "framewidth": 32,
+            "frameheight": 32,
+            "frames": 12,
+            "regx": 16,
+            "regy": 16,
+            "animations": {
+                "down": [
+                    48,
+                    50,
+                    "down",
+                    24
+                ],
+                "left": [
+                    60,
+                    62,
+                    "left",
+                    24
+                ],
+                "right": [
+                    72,
+                    74,
+                    "right",
+                    24
+                ],
+                "up": [
+                    84,
+                    86,
+                    "up",
+                    24
+                ]
+            }
+        },
+        {
+            "name": "anime girl",
+            "type": "creeps",
+            "src": "./assets/img/orc.png",
+            "framewidth": 32,
+            "frameheight": 32,
+            "frames": 12,
+            "regx": 16,
+            "regy": 16,
+            "animations": {
+                "down": [
+                    51,
+                    53,
+                    "down",
+                    24
+                ],
+                "left": [
+                    63,
+                    65,
+                    "left",
+                    24
+                ],
+                "right": [
+                    75,
+                    77,
+                    "right",
+                    24
+                ],
+                "up": [
+                    87,
+                    89,
+                    "up",
+                    24
+                ]
+            }
+        },
+        {
+            "name": "anime princess",
+            "type": "creeps",
+            "src": "./assets/img/orc.png",
+            "framewidth": 32,
+            "frameheight": 32,
+            "frames": 12,
+            "regx": 16,
+            "regy": 16,
+            "animations": {
+                "down": [
+                    54,
+                    56,
+                    "down",
+                    24
+                ],
+                "left": [
+                    66,
+                    68,
+                    "left",
+                    24
+                ],
+                "right": [
+                    78,
+                    80,
+                    "right",
+                    24
+                ],
+                "up": [
+                    90,
+                    92,
+                    "up",
+                    24
+                ]
+            }
+        },
+        {
+            "name": "anime angelix",
+            "type": "creeps",
+            "src": "./assets/img/orc.png",
+            "framewidth": 32,
+            "frameheight": 32,
+            "frames": 12,
+            "regx": 16,
+            "regy": 16,
+            "animations": {
+                "down": [
+                    57,
+                    59,
+                    "down",
+                    24
+                ],
+                "left": [
+                    69,
+                    71,
+                    "left",
+                    24
+                ],
+                "right": [
+                    81,
+                    83,
+                    "right",
+                    24
+                ],
+                "up": [
+                    93,
+                    95,
+                    "up",
+                    24
+                ]
+            }
         }
     ],
     "terrain": [
-        {
-            "name": "32x32",
-            "type": "terrain",
-            "src": "./assets/img/tiles_24bit.png",
-            "framewidth": 65,
-            "frameheight": 110,
-            "regx": 0,
-            "regy": 32
-        },
         {
             "name": "64x54",
             "type": "terrain",
@@ -306,7 +585,7 @@
                     "bulletfade": 300,
                     "levelxp": null,
                     "effect": {
-                        "amount": 0.1,
+                        "amount": 0.10000000000000001,
                         "times": 3
                     },
                     "splashrad": null,
@@ -376,7 +655,7 @@
                     "bulletspeed": 1,
                     "bulletfade": 500,
                     "levelxp": null,
-                     "effect": {
+                    "effect": {
                         "amount": 1,
                         "times": 3
                     },

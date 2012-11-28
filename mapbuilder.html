@@ -107,7 +107,7 @@
 
 				createjs.Ticker.addListener(window);
 				createjs.Ticker.useRAF = false;
-				createjs.Ticker.setFPS(Game.TARGET_FPS); // Best Framerate targeted (60 FPS)                    
+				createjs.Ticker.setFPS(Game.TARGET_FPS); // Best Framerate targeted (60 FPS)              
 			}
 
 
@@ -119,12 +119,7 @@
 			  this.towers.render();
 			};
 
-			function tick (elapsedTime) {   
-
-				/*  var elapsedticks = createjs.Ticker.getTicks(false) / Game.TARGET_FPS; //timer in seconds
-				elapsedticks -= game.ticktimer;
-				game.level.update(elapsedticks);
-				game.ticktimer = elapsedticks;*/
+			function tick () {   
 				game.stage.update();
 			};
 
@@ -139,7 +134,6 @@
 					game.manifest = manifest;
 				}); 
 			};
-
 		</script>
 	</body>
 </html>
