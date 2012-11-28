@@ -53,6 +53,7 @@ mapprot.initialize = function(mapdata) {
   this.addChild(this.terrain);
   this.addChild(this.decor);
   game.stage.addChild(this);
+  game.stage.setChildIndex(this, 1);
 };
 
 /*mapprot.setMap = function (mapdata){
