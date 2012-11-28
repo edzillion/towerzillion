@@ -1,6 +1,6 @@
 require('./public/js/Level.js');
 var databaseUrl = "modelproj"; // "username:password@example.com/mydb"
-var collections = ["maps"]
+var collections = ["maps","savedmaps"]
 var db = require("mongojs").connect(databaseUrl, collections);
 var GameModel = require('./GameModel');
 var Point = require('./Point');
@@ -37,20 +37,80 @@ gamedata = {
   }
 };
 
-var gamemodel = new GameModel(gamedata);
+//var gamemodel = new GameModel(gamedata);
 
-db.maps.save(gamemodel, function(err, saved) {
-  if( err || !saved ) console.log("gamemodel not saved: "+err);
-  else console.log("gamemodel "+saved+" saved");
-});
+var savegame = function (leveldata) {
+  db.maps.save(leveldata, function(err, saved) {
+    if( err || !saved ) {
+      console.log("savegame: not saved:");
+      return false;
+    }
+    else {
+      console.log("savegame: saved");
+      return true;
+    }
+  });
+}
+
+var savemap = function (mapdata) {
+  db.savedmaps.save(mapdata, function(err, saved) {
+    if( err || !saved ) {
+      console.log("savemap: not saved:");
+      return false;
+    }
+    else {
+      console.log("savemap: saved");
+      return true;
+    }
+  });
+}
 
 var io = require('socket.io').listen(8080);
 
 io.sockets.on('connection', function (socket) {
+
   socket.on('loadgame', function (data) {
     console.log('load level');
     db.maps.find(function(err, docs) {
       socket.emit('loadgame', docs);
     });
   });
+
+  socket.on('savegame', function (data) {
+    console.log('save level');
+    var success = savemap(data);
+    socket.emit('savegame', success);
+  });
+
+  socket.on('getsavedmaps', function (data) {
+    console.log('getsavedmaps');
+    //var response;
+    db.savedmaps.find({},{"level.name":1}, function(err, mapnames) {
+      if (err || !mapnames.length) 
+        console.log("No female users found");
+      else {
+        //response = mapnames;
+        //mapnames.forEach( function(mapnames) {console.log(mapnames)});
+        console.log(mapnames);
+        socket.emit('getsavedmaps', mapnames);
+      }
+    });
+  });
+
+  socket.on('getmapbyid', function (id) {
+    console.log('getmapbyid');
+    //var response;
+    db.savedmaps.find({_id:db.ObjectId(id)}, function(err, map) {
+      if (err || !map.length){ 
+        console.log("No map!");
+      }
+      else {
+        //response = mapnames;
+        //mapnames.forEach( function(mapnames) {console.log(mapnames)});
+        console.log(map);
+        socket.emit('getmapbyid', map);
+      }
+    });
+});
+
 });

@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+	<title>TDZillion Map Builder</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="./public/assets/css/UI.css">
+	<link rel="stylesheet" href="./public/assets/css/flick/jquery-ui-1.9.2.custom.css" type="text/css" />
+</head>
+
+	<body> 
+		<canvas id="Canvas" width="1400" height="900" style="position: absolute; left: 27px; top: 0; z-index: 0;"></canvas>
+				
+		<div id="rpanel"></div>
+		<div id="bpanel"></div>
+
+
+		
+		<button id="remove_button">Remove Decor</button>
+		<button id="clear_button">Clear</button>
+		<button id="save_button">Save</button>
+		<button id="load_button">Load</button>
+		<button id="clear_handler">Clear Handlers</button>
+
+
+		<script type="text/javascript" src="http://localhost:8080/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="./public/assets/libs/easeljs-0.5.0.min.js"></script>
+		<script type="text/javascript" src="./public/assets/libs/jquery-1.8.3.js"></script>
+		<script type="text/javascript" src="./public/assets/libs/jquery-ui-1.9.2.custom.js"></script>
+		<script type="text/javascript" src="./public/assets/libs/Point.js"></script>
+		<script type="text/javascript" src="./public/js/Map.js"></script>
+		
+		<script type="text/javascript">
+
+			
+			  
+			  
+			  
+			  /**
+			   * Initialises client-side functionality
+			   */
+			  function init() {
+			    // WebSockets supported
+			    if ("WebSocket" in window) {
+			      console.log('create game');
+			      document.body.style.cursor='default';
+			      var canvas = $('#Canvas');
+			      game = new LevelBuilder(canvas);
+			      game.initialise();
+			      //itListeners();
+			    // WebSockets not supported
+			    } else {
+			      console.log("websockets not supported");
+			    }
+			  };
+
+				/**
+				 * Game controller
+				 *
+				 * @author edzillion
+				 */
+
+				/**
+				* @constructor
+				*/
+				var LevelBuilder = function(canvas) {
+					console.log('level builder');
+				  this.socket = new io.connect('http://localhost:8080');
+				  this.stage = new createjs.Stage(document.getElementById("Canvas"));
+
+				  this.state = 'loading';
+				  this.manifest = null;
+
+					this.map = null;
+
+					this.decor = new createjs.Container();			  
+					this.decor.name = 'Decor Container';
+					
+				  this.cursor = new createjs.Container();
+				  this.cursor.name = 'Cursor Container';
+				  this.cursor.alpha = .6;
+				  
+				  this.UI = new createjs.Container();
+				  this.UI.name = 'UI Container';
+
+				  this.stage.addChild(this.map);
+				  this.stage.addChild(this.decor);
+				  this.stage.addChild(this.cursor);
+				  this.stage.addChild(this.UI);
+
+				  this.currentdialog = null;
+				  this.maplist = null;
+				  this.loadselected = null;
+
+			    this.graphics = {
+				    spritesheets: {
+				      towers: null,
+				      bullets: null,
+				      creeps: Array(),
+				      terrain: null,
+				      decor: null
+				    }
+				  };
+				};
+
+				LevelBuilder.prototype.initialise = function() {
+					console.log('LevelBuilder initialise');
+				  var preload = $.when(
+				    this.loadManifest(),
+				    this.loadLevelData()
+				  );
+
+				  preload.done( function(){
+				  	game.launch();
+				  });
+				};
+
+				LevelBuilder.prototype.launch = function (){
+					console.log('launch');
+					var gfx = $.when(
+				  	this.preloadGraphics() 
+				  );
+
+				  gfx.done( function(){
+				  	game.buildUI();
+				  	game.buildMap();
+				  	game.start();
+				  });
+				};
+
+				LevelBuilder.prototype.loadLevelData = function (levelnum) {
+				  console.log('LevelBuilder loadLevelData');	
+				  var dfr = new $.Deferred();
+
+				  game.socket.emit('loadgame', {level:levelnum});
+				  game.socket.on('loadgame', function (gamedata) {
+				    //game.level.collectData(gamedata[2].currentlevel);
+				    game.mapdata = gamedata[2].currentlevel;
+				    dfr.resolve();
+				  });
+				  return dfr.promise();
+				};
+
+				LevelBuilder.prototype.start = function () {
+					game.stage.setChildIndex(this.map, 1);
+					console.log('start');
+					createjs.Ticker.addListener(window);
+					createjs.Ticker.useRAF = false;
+					createjs.Ticker.setFPS(30); // Best Framerate targeted (60 FPS)                    
+				};
+
+				function tick (elapsedTime) {   
+
+					/*  var elapsedticks = createjs.Ticker.getTicks(false) / Game.TARGET_FPS; //timer in seconds
+					elapsedticks -= game.ticktimer;
+					game.level.update(elapsedticks);
+					game.ticktimer = elapsedticks;*/
+					game.stage.update();
+				};
+
+				LevelBuilder.prototype.loadManifest = function() {
+					console.log('LevelBuilder loadManifest');
+					var loadFile = $.when(
+						$.getJSON('./public/data/LevelBuilderManifest.json', function(data) {
+						  return $.parseJSON(data);
+					}));
+
+					loadFile.done(function (manifest) {
+						game.manifest = manifest;
+					}); 
+				};
+		
+				LevelBuilder.prototype.preloadGraphics = function() {
+    			console.log('preloadGraphics');
+					var dfr = new $.Deferred();
+					var remaining = this.manifest.decor.length + this.mapdata.tilesused.length;
+
+					game.graphics.spritesheets.decor = Array();
+
+				  for (var i = 0; i < this.manifest.decor.length; i++) {
+   					var img = new Image();
+
+						img.src = this.manifest.decor[i].src.splice(1,0,'/public');
+						img.data = this.manifest.decor[i];
+						
+						img.onload = function() {
+				      var spritesheet = new createjs.SpriteSheet({
+				        images: [this],
+				        frames: {width:this.data.framewidth, height:this.data.frameheight, count:this.data.numframes+1, regX:this.data.regx, regY:this.data.regy}
+				      });
+				      spritesheet.name = this.data.name;
+				      spritesheet.type = this.data.type;
+							
+							game.graphics.spritesheets.decor.push(spritesheet);
+
+				      --remaining;
+				      if (remaining <= 0) {
+				        dfr.resolve();
+				      }
+				    }
+			  	}
+
+				  for (var i=0; i<this.mapdata.tilesused.length; i++) {
+				    for (var j=0; j<game.manifest.terrain.length; j++) { //get each of each type of tower
+				      if (game.manifest.terrain[j].name == this.mapdata.tilesused[i]){
+				        var tileset = this.manifest.terrain[j];
+				        var img = new Image();
+								img.src = tileset.src.splice(1,0,'/public');
+								img.data = tileset;
+								
+								img.onload = function() {
+						      var spritesheet = new createjs.SpriteSheet({
+						        images: [this],
+						        frames: {width:this.data.framewidth, height:this.data.frameheight, regX:this.data.regx, regY:this.data.regy},
+						      });
+						      spritesheet.name = this.data.name;
+						      spritesheet.type = this.data.type;
+
+						      game.graphics.spritesheets[spritesheet.type] = spritesheet;
+
+						      --remaining;
+						      if (remaining <= 0) {
+						        dfr.resolve();
+						      }
+						    }
+
+				      }
+				    }
+				  }
+			  	return dfr.promise();
+				};
+
+				LevelBuilder.prototype.buildUI = function () {
+
+	  			var savedialog = document.createElement('div');
+
+    			$(savedialog).addClass('dialog_window');
+    			var string = '<table class="dialog_form"><tr> <th>Map Name</th> </tr> <tr> <td><input type="text" id="new_map_name" /></td> </tr> </tr> </table> ';
+    			$(savedialog).html(string);
+
+					$('#save_button').button().click( function() {
+						game.currentdialog = $(savedialog);
+     				var create_dialog = $(savedialog);
+     				var create_button = $(this);
+      			//if the window is already open, then close it and replace the label of the button
+			      if( create_dialog.dialog("isOpen") ) {
+			         create_dialog.dialog("close");
+			      } else {
+			         //otherwise, open the window and replace the label again
+			         create_dialog.dialog("open");
+			      }
+  			 	});
+
+					$(savedialog).dialog({
+					   width: 'auto',
+					   height: 'auto',
+					   autoOpen : false,
+					   title : 'Save Map',
+					   buttons: [
+					      {
+					         text: 'Save',
+					         click: game.saveClick          
+					      }
+					   ]
+					});
+
+	  			var loaddialog = document.createElement('div');
+    			$(loaddialog).addClass('dialog_window');
+    			var string = '<table class="dialog_form"><tr> <th>Maps</th> </tr> <tr> <td><ol id="mapnameselector"></ol></td> </tr> </tr> </table> ';
+    			$(loaddialog).html(string);
+
+					$(loaddialog).dialog({
+					   width: 'auto',
+					   height: 'auto',
+					   autoOpen : false,
+					   title : 'Load Map',
+					   buttons: [
+					      {
+					         text: 'Load',
+					         click: game.loadClick,      
+					      }
+					   ],
+					   open: game.openLoadDialog				   
+					});
+
+					$('#load_button').button().click( function() {
+
+						game.currentdialog = $(loaddialog);
+ 						var create_dialog = $(loaddialog);
+ 						var create_button = $(this);
+
+  					//if the window is already open, then close it and replace the label of the button
+	      		if( create_dialog.dialog("isOpen") ) {
+         			create_dialog.dialog("close");
+      			} else {
+	         		//otherwise, open the window and replace the label again
+	         		create_dialog.dialog("open");
+	      		}
+					});
+
+					$('#remove_button').button().click( function() {
+						if (game.state == 'placing') {
+							game.state = 'removing';
+							console.log('STATE: removing');
+							document.body.style.cursor='crosshair';
+							game.stage.onMouseMove = game.cursorHandler;
+				  		game.stage.onClick = game.cursorClickHandler;
+				  		$(this).button("option", "label", "Place Decor");
+					  	}
+					  	else if (game.state == 'removing') {
+							game.state = 'placing';
+							console.log('STATE: placing');
+							document.body.style.cursor='pointer';
+							game.stage.onMouseMove = game.cursorHandler;
+					  		game.stage.onClick = game.cursorClickHandler;
+					  		$(this).button("option", "label", "Remove Decor");
+				  	}
+					});
+
+					$('#clear_button').button().click( function() {
+						game.decor.removeAllChildren();
+						var defrect = game.graphics.spritesheets.terrain.getFrame(0);
+						for (var i = 0; i < game.map.children.length; i++) {
+							game.map.children[i].sourceRect = defrect.rect;
+						}
+					});
+
+					$('#clear_handler').button().click( function() {
+						game.stage.onMouseMove = null;
+				  	game.stage.onClick = null;
+					});
+
+				 	smallanchor = new Point(700,90);
+				 	medanchor = new Point(700,170);
+				 	biganchor = new Point(700,500);
+
+				 	decorpanel = {size: new Point(630,700)}
+
+				  //first the small tiles
+				  for (var i = 0; i < this.graphics.spritesheets.decor.length; i++) {
+				  	var sheet = this.graphics.spritesheets.decor[i]
+				  	var amt = sheet.getNumFrames();
+				  	for (var j = 0; j < amt; j++) {
+				  		var tempc = new createjs.Container();
+				  		var img = new createjs.SpriteSheetUtils.extractFrame(sheet, j);
+				  		var sprite = new createjs.Bitmap(img);
+				  		tempc.frame = j;
+				  		tempc.sheet = sheet.name;
+				  		var anchor;
+				  		switch (sheet.name) {
+				  			case 'small': anchor = smallanchor;
+				  			break;
+				  			case 'medium': anchor = medanchor;
+				  			break;
+				  			case 'large': anchor = biganchor;
+				  			break;
+				  		}				  		
+
+				  		var rightsidex = sheet._frameWidth * j;
+				  		var row = Math.floor(rightsidex/decorpanel.size.x);
+				  		var col = Math.floor((rightsidex%decorpanel.size.x)/sheet._frameWidth);
+
+							tempc.regX = sheet._frameWidth/2;
+				  		tempc.regY = sheet._frameHeight/2;
+
+				  		tempc.x = anchor.x + (col * sheet._frameWidth) + (sheet._frameWidth/2);
+			  			tempc.y = anchor.y + (row * sheet._frameHeight) + (sheet._frameHeight/2);		  		
+				  		tempc.onClick = game.clickUISprite;
+
+				  		//background
+				  		var border = new createjs.Shape();
+				  		border.graphics.beginFill("rgba(0,0,0,1)").rect(0, 0, sheet._frameWidth, sheet._frameHeight);
+				  		border.graphics.beginFill("rgba(255,255,255,1)").rect(1, 1, sheet._frameWidth-2, sheet._frameHeight-2);
+				  		tempc.addChild(border);
+				  		tempc.addChild(sprite);
+				  		game.UI.addChild(tempc);
+				  	}	
+					}
+
+				};
+
+				LevelBuilder.prototype.buildMap = function () {
+					console.log('buildMap');
+					this.map = new Map(this.mapdata);
+
+					this.map.renderForLevelBuilder();
+
+					for (var i = 0; i < this.map.children.length; i++) {
+						this.map.children[i].onClick = game.clickTile;
+					};	
+				};
+
+				LevelBuilder.prototype.clickTile = function (event) {
+					var localx = event.stageX % 64;
+					if (localx > 32){
+						if (this.frame == 9)
+							this.frame = 0
+						else
+							++this.frame
+
+						var newframe = game.graphics.spritesheets.terrain.getFrame(this.frame);
+						this.sourceRect = newframe.rect;
+						
+					}
+					else {
+						if (this.frame == 0)
+							this.frame = 9
+						else
+							--this.frame
+
+						var newframe = game.graphics.spritesheets.terrain.getFrame(this.frame);
+						this.sourceRect = newframe.rect;
+					}
+				}
+
+				LevelBuilder.prototype.saveClick = function(){
+					
+					var mapname = $('#new_map_name').val();
+					game.saveToDB(mapname);
+
+				}
+
+				LevelBuilder.prototype.loadClick = function(){
+
+					var dfr = new $.Deferred();
+					document.body.style.cursor='wait';
+					var id = $(game.loadselected).attr('id');
+					game.socket.emit('getmapbyid', id);
+
+				  game.socket.on('getmapbyid', function (gamedata) {
+
+				    game.mapdata = gamedata[0].level;
+				    document.body.style.cursor='default';
+				    game.map.setMap(game.mapdata);
+				    game.map.renderForLevelBuilder();
+				    for (var i = 0; i < game.map.children.length; i++) {
+							game.map.children[i].onClick = game.clickTile;
+						};	
+				    $(game.currentdialog).dialog('close');
+				    dfr.resolve();
+				  });
+				  return dfr.promise();
+				}
+
+				LevelBuilder.prototype.clickUISprite = function (event) {
+					console.log('STATE: placing');
+					game.state = 'placing';
+					document.body.style.cursor='pointer';
+
+					game.cursor.removeAllChildren();
+					var newsprite = this.clone(true);
+					newsprite.onClick = null;
+
+					newsprite.removeChildAt(0);
+
+					newsprite.frame = this.frame;
+					newsprite.sheet = this.sheet;
+					newsprite.x = 0;
+					newsprite.y = 0;
+					game.cursor.addChild(newsprite);
+
+					game.stage.onMouseMove = game.cursorHandler;
+				  game.stage.onClick = game.cursorClickHandler;
+				};
+
+				LevelBuilder.prototype.cursorHandler = function (event) {
+
+				  game.cursor.x = event.stageX;
+				  game.cursor.y = event.stageY;				  
+				};
+			
+				LevelBuilder.prototype.cursorClickHandler = function (event) {
+
+			  	if (event.stageX < game.map.mapoffset.x || event.stageY < game.map.mapoffset.y || event.stageX > 640 || event.stageY > 700) {
+			    	game.stage.onMouseMove = null;
+			  		game.stage.onClick = null;
+			  		game.state = '';
+			    	return;
+					}
+					if (game.state == 'removing') {
+						if (event.stageX < game.map.mapoffset.x || event.stageY < game.map.mapoffset.y || event.stageX > 700 || event.stageY > 700) {				
+							game.stage.onMouseMove = null;
+					  		game.stage.onClick = null;
+					  		document.body.style.cursor='default';
+							return;
+						}
+
+					  	var removedsprite = game.cursor.getChildAt(0);
+
+		        		for (var i=0; i<game.decor.children.length; i++) {
+	 				 		var decor = game.decor.children[i];
+		  					var localcoords = decor.globalToLocal(event.stageX, event.stageY);
+		  					var hit = decor.hitTest(localcoords.x,localcoords.y);
+
+		  					if (hit)
+		  						game.decor.removeChild(decor);
+		  				}
+	  				}
+
+				  if (game.state == 'placing') {
+
+				  	if (!game.cursor.getChildAt(0))
+				  		return;
+				    var placedsprite = game.cursor.getChildAt(0);
+				    placedsprite.x = event.stageX;
+				    placedsprite.y = event.stageY;
+
+				  	game.decor.addChild(placedsprite);
+
+					  game.stage.onMouseMove = null;
+					  game.stage.onClick = null;
+					  game.cursor.removeAllChildren();
+					}
+  			};
+
+	  		LevelBuilder.prototype.getTiles = function () {
+
+	  			var maparray = Array();
+	  			for (var i = 0; i < game.map.children.length; i++) {
+				 		var framenum = game.map.children[i].frame;
+				 		//here
+	  				maparray.push(framenum);
+	  			}
+	  			return maparray;
+	  		};
+
+				LevelBuilder.prototype.getDecor = function () {
+
+					var decorarray = Array();
+	  			for (var i = 0; i < game.decor.children.length; i++) {
+						var decoritem = game.decor.children[i];
+						var saveitem = {spritesheet:decoritem.sheet, spriteframe:decoritem.frame, x:Math.round(decoritem.x), y:Math.round(decoritem.y)};
+						decorarray.push(saveitem);
+					}
+					return decorarray;
+				};
+
+	  		LevelBuilder.prototype.saveToDB = function (mapname) {	  
+
+				  var dfr = new $.Deferred();
+
+					document.body.style.cursor='wait';
+				  
+				  var savedata = {
+				  	level: {
+				  		name: mapname,
+				  		gridwidth: 10,
+				  		gridheight: 10,
+				  		tilewidth: 64,
+				  		tileheight: 54,
+				  		terraintiles: game.getTiles(),
+				  		decor: game.getDecor(),
+				  		tileused: [game.graphics.spritesheets.terrain.name]
+				  	}
+				  };
+
+				  game.socket.emit('savegame', savedata);
+
+				  game.socket.on('savegame', function (success) {
+				    console.log('save game success: '+success)
+				    dfr.resolve();
+				    document.body.style.cursor='default';
+				    $(game.currentdialog).dialog('close');
+				  });
+
+				  return dfr.promise();
+
+	  		};
+
+	  		LevelBuilder.prototype.openLoadDialog = function () {
+
+				  game.socket.emit('getsavedmaps');
+				  game.socket.on('getsavedmaps', function (mapnames) {
+					  //game.level.collectData(gamedata[2].currentlevel);
+					  game.maplist = mapnames;
+
+				    var htmltxt = '';
+				    for (var i = 0; i < game.maplist.length; i++) {
+				    	htmltxt += '<li class="ui-widget-content" id="'+game.maplist[i]._id+'">'+game.maplist[i].level.name+'</li>';//>'+game.maplist[i].level.name+'</li>';  // value="'+game.maplist[i]._id+'">'+game.maplist[i].level.name+'</li>';
+				    }
+
+				    $('#mapnameselector').html(htmltxt);
+
+				    $('#mapnameselector').selectable( {
+							selected: function(event, ui){            
+        				game.loadselected = ui.selected;
+    					}
+				  	});
+				  });
+				};
+	  		
+
+		    String.prototype.splice = function( idx, rem, s ) {
+			    return (this.slice(0,idx) + s + this.slice(idx + Math.abs(rem)));
+				};
+
+				init();
+
+		</script>
+	</body>
+</html>

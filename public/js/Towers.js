@@ -61,7 +61,7 @@ towerprot.initialize = function(towerdata) {
 
   this.Container_initialize();
 
-  this.towerspritesheet = game.level.graphics.spritesheets.towers;
+  this.towerspritesheet = game.graphics.spritesheets.towers;
 
   this.pos = game.level.map.convertGridToMapPoint(towerdata.point);
   this.gridpoint = towerdata.point;

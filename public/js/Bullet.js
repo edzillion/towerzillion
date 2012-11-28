@@ -20,7 +20,7 @@ bulletprot.initialize = function(tower,pos) {
   this.speed = tower.bulletspeed;
   this.shoot = tower.bulletsprite;
   this.fade = tower.bulletfade;
-  this.anim = new createjs.BitmapAnimation(game.level.graphics.spritesheets.bullets);
+  this.anim = new createjs.BitmapAnimation(game.graphics.spritesheets.bullets);
   this.anim.regX = 16;
   this.anim.regY = 16;
 

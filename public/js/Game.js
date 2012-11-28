@@ -15,10 +15,19 @@ var Game = function(canvas) {
   this.stage = new createjs.Stage(document.getElementById("Canvas"));
   this.ticktimer = 0;
   this.manifest = null;
-  this.graphics = null;
   this.player = new Player();
   this.UI = new UI(); 
   this.date = new Date(); 
+
+  this.graphics = {
+    spritesheets: {
+      towers: null,
+      bullets: null,
+      creeps: Array(),
+      terrain: null
+    }
+  };
+
 };
 
 Game.MESSAGE_TYPE_LOAD_LEVEL = 1;

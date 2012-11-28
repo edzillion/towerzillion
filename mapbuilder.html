@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+	<title>TDZillion Map Builder</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="./assets/css/UI.css">
+</head>
+
+	<body> 
+		<canvas id="Canvas" width="641" height="596" style="position: absolute; left: 27px; top: 0; z-index: 0;"></canvas>
+				
+		<div id="rpanel"></div>
+		<div id="bpanel"></div>
+
+		<script type="text/javascript" src="http://localhost:8080/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="./assets/libs/easeljs-0.5.0.min.js"></script>
+		<script type="text/javascript" src="./assets/libs/ColorFilter.js"></script>
+		<script type="text/javascript" src="./assets/libs/jquery-1.8.2.js"></script>
+		<script type="text/javascript" src="./assets/libs/Point.js"></script>
+		<script type="text/javascript" src="./js/intercept.js"></script>
+		<script type="text/javascript" src="./js/Creeps.js"></script>
+		<script type="text/javascript" src="./js/Bullet.js"></script>
+		<script type="text/javascript" src="./js/Towers.js"></script>
+		<script type="text/javascript" src="./js/Map.js"></script>
+		<script type="text/javascript" src="./js/Level.js"></script>
+		<script type="text/javascript" src="./js/Player.js"></script>
+		<script type="text/javascript" src="./js/Path.js"></script>
+		<script type="text/javascript" src="./js/UI.js"></script>
+		<script type="text/javascript" src="./js/Game.js"></script>
+		
+		<script type="text/javascript">
+
+			$(function() {
+			  
+				  /**
+				   * Initialises client-side functionality
+				   */
+				  function init() {
+				    // WebSockets supported
+				    if ("WebSocket" in window) {
+				      console.log('create game');
+				      var canvas = $('#Canvas');
+				      mapbuilder = new MapBuilder(canvas);
+				      mapbuilder.init();
+				      //itListeners();
+				    // WebSockets not supported
+				    } else {
+				      console.log("websockets not supported")
+				    };
+				  };
+
+			/**
+			 * Game controller
+			 *
+			 * @author edzillion
+			 */
+
+			/**
+			* @constructor
+			*/
+			var MapBuilder = function(canvas) {
+
+			  this.socket = new io.connect('http://localhost:8080');
+			  this.initSocketListeners(); 
+			  this.level = 'level';
+			  this.stage = new createjs.Stage(document.getElementById("Canvas"));
+			  this.ticktimer = 0;
+			  this.manifest = null;
+			  this.graphics = null;
+			  this.UI = new UI(); 
+			  this.date = new Date(); 
+			};
+
+			Game.MESSAGE_TYPE_LOAD_LEVEL = 1;
+			Game.MESSAGE_TYPE_ERROR = 2;
+			Game.TARGET_FPS = 60;
+
+			Game.prototype.init = function() {
+
+			  var preload = $.when(
+			    this.loadManifest(),
+			  );
+
+			  preload.done( function(){
+			    this.render();
+			    game.startGame();
+			    game.UI.render();
+			  });
+			};
+
+			Level.prototype.loadLevelData = function (levelnum){
+			  
+			  var dfr = new $.Deferred();
+
+			  mapbuilder.socket.emit('loadgame', {level:levelnum});
+			  mapbuilder.socket.on('loadgame', function (gamedata) {
+			    //game.level.collectData(gamedata[2].currentlevel);
+			    this.mapdata = gamedata[2].currentlevel;
+			    dfr.resolve();
+			  });
+			  return dfr.promise();
+			};
+
+			Game.prototype.startGame = function () {
+
+				createjs.Ticker.addListener(window);
+				createjs.Ticker.useRAF = false;
+				createjs.Ticker.setFPS(Game.TARGET_FPS); // Best Framerate targeted (60 FPS)                    
+			}
+
+
+			Level.prototype.render = function (){
+				this.map = new Map();
+			  this.map.render();
+			  this.buildMap()
+			  this.map.render();
+			  this.towers.render();
+			};
+
+			function tick (elapsedTime) {   
+
+				/*  var elapsedticks = createjs.Ticker.getTicks(false) / Game.TARGET_FPS; //timer in seconds
+				elapsedticks -= game.ticktimer;
+				game.level.update(elapsedticks);
+				game.ticktimer = elapsedticks;*/
+				game.stage.update();
+			};
+
+			Game.prototype.loadManifest = function() {
+
+				var loadFile = $.when(
+					$.getJSON('./data/PreloadManifest.json', function(data) {
+					  return $.parseJSON(data);
+				}));
+
+				loadFile.done(function (manifest) {
+					game.manifest = manifest;
+				}); 
+			};
+
+		</script>
+	</body>
+</html>

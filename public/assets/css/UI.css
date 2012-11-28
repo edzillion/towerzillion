@@ -165,3 +165,51 @@
 	color:white;
 	font-size: 14pt;
 }
+
+/*jqueryUI stuff*/
+.dialog_form th {
+   text-align: left;
+}
+.dialog_form textarea, .dialog_form input[type=text] {
+   width: 320px;
+}
+
+#save_button {
+position: absolute; 
+	left: 1004px; 
+	top: 15px; 
+	z-index: 1;
+}
+
+#load_button {
+position: absolute; 
+	left: 1104px; 
+	top: 15px; 
+	z-index: 1;
+}
+
+#clear_button {
+position: absolute; 
+	left: 900px; 
+	top: 15px; 
+	z-index: 1;
+}
+
+#remove_button {
+	position: absolute; 
+	left: 724px; 
+	top: 15px; 
+	z-index: 1;
+}
+
+#clear_handler {
+	position: absolute; 
+	left: 1200px; 
+	top: 15px; 
+	z-index: 1;
+}
+
+#mapnameselector .ui-selecting { background: #3496FA; }
+#mapnameselector .ui-selected { background: #0073EA; color: white; }
+#mapnameselector { list-style-type: none; margin: 0; padding: 0; width: 100%; }
+#mapnameselector li { margin: 3px; padding: 0.4em; font-size: 1.2em; height: 20px; width: 90%}

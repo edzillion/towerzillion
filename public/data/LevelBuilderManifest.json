@@ -1,0 +1,52 @@
+{
+    "decor": [
+    {
+        "name": "large",
+        "type": "decor",
+        "src": "./assets/img/decor_sprites_large.png",
+        "framewidth": 96,
+        "frameheight": 168,
+        "regx": 48,
+        "regy": 84,
+        "numframes":5
+    },
+    {
+        "name": "medium",
+        "type": "decor",
+        "src": "./assets/img/decor_sprites_medium.png",
+        "framewidth": 96,
+        "frameheight": 96,
+        "regx": 48,
+        "regy": 48,
+        "numframes":15    
+    },
+    {
+        "name": "small",
+        "type": "decor",
+        "src": "./assets/img/decor_sprites_small.png",
+        "framewidth": 48,
+        "frameheight": 48,
+        "regx": 24,
+        "regy": 24,
+        "numframes":8
+    }],
+    "terrain": [
+    {
+        "name": "32x32",
+        "type": "terrain",
+        "src": "./assets/img/tiles_24bit.png",
+        "framewidth": 65,
+        "frameheight": 110,
+        "regx": 0,
+        "regy": 32
+    },
+    {
+        "name": "64x54",
+        "type": "terrain",
+        "src": "./assets/img/tiles_24bit.png",
+        "framewidth": 65,
+        "frameheight": 110,
+        "regx": 0,
+        "regy": 32
+    }]
+}

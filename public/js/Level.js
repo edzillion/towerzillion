@@ -12,14 +12,7 @@
   this.lives = 10;
   this.mapdata = null;
   this.wavecount = 0;
-  this.graphics = {
-    spritesheets: {
-      towers: null,
-      bullets: null,
-      creeps: Array(),
-      terrain: null
-    }
-  };
+
   this.graphicsdata = Array();
 
   this.UI = new createjs.Container();
@@ -86,8 +79,8 @@ Level.prototype.preloadGraphics = function() {
       imgArray.push(this);
       if (this.data.type == 'creeps') {
         var redfilter = new createjs.ColorFilter(1,0,0,1);
-        var greenfilter = new createjs.ColorFilter(0,1,0,1);
-        var bluefilter = new createjs.ColorFilter(0,0,1,1);
+        var greenfilter = new createjs.ColorFilter(.2,1,.2,1);
+        var bluefilter = new createjs.ColorFilter(.2,.2,1,1);
         var rbmp = new createjs.Bitmap(this);
         var gbmp = new createjs.Bitmap(this);
         var bbmp = new createjs.Bitmap(this);
@@ -133,9 +126,9 @@ Level.prototype.preloadGraphics = function() {
 
       //there are multiple creeps per level
       if (this.data.type == 'creeps')                
-        game.level.graphics.spritesheets.creeps.push(spritesheet);
+        game.graphics.spritesheets.creeps.push(spritesheet);
       else
-        game.level.graphics.spritesheets[spritesheet.type] = spritesheet;
+        game.graphics.spritesheets[spritesheet.type] = spritesheet;
 
       --remaining;
       if (remaining <= 0) {

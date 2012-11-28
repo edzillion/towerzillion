@@ -9,7 +9,7 @@
  */
  function Creeps() {
 
-  this.spritesheets = game.level.graphics.spritesheets.creeps;
+  this.spritesheets = game.graphics.spritesheets.creeps;
   this.container = new createjs.Container();
   this.container.name = 'Creep Container';
   this.creeplist = Array();
@@ -21,7 +21,7 @@
   game.stage.addChild(this.container);
 }
 
-Creeps.prototype.startWave = function (wave){
+Creeps.prototype.startWave = function (wave) {
 
   this.currentwave = wave;
   var nextcreeps = wave.creeps;
@@ -87,7 +87,7 @@ Creeps.prototype.update = function (elapsedticks) {
       game.UI.$livestext.text(game.level.lives.toString()); 
       this.kill(creep);
     }
-    creep.healthbar.update();
+    creep.updateHealthBar();
   }
 };
 
@@ -138,6 +138,7 @@ creepprot.initialize = function(creepdata,i) {
 
   this.name = creepdata.name+(i);
   this.health = creepdata.health+3;
+  this.maxhealth = creepdata.health+3;
   this.waypoint = 0;
   this.speed = creepdata.speed;
   this.xp = creepdata.xp;
@@ -151,6 +152,8 @@ creepprot.initialize = function(creepdata,i) {
   this.effectlayer = new createjs.Container();
   this.baseanim = null;
   this.dmgmodifier = 0;
+
+
 
   for (var i = 0; i < game.level.graphics.spritesheets.creeps.length; i++) {
     if (creepdata.name == game.level.graphics.spritesheets.creeps[i].name) {
@@ -175,12 +178,18 @@ creepprot.initialize = function(creepdata,i) {
   this.path = new Path(this.waypoints[this.waypoint], this.waypoints, this.speed/60);
   this.x = this.waypoints[this.waypoint].x;
   this.y = this.waypoints[this.waypoint].y;
-  this.healthbar = new HealthBar(this);
 
-  //effects
-/*  var blueFilter = new createjs.ColorFilter(0,0,1,1);
-  game.level.UI.cursor.towerbmp.filters = [blueFilter];
-  game.level.UI.cursor.towerbmp.updateCache();*/
+
+  this.healthbar = new createjs.Container();
+  this.healthbar.barbg = new createjs.Shape();
+  this.healthbar.barbg.graphics.beginFill("rgba(20,70,0,1)").rect(-10, -18, this.sizeX, 4); //this should be a ratio of the size of the sprite: fixthis
+  this.healthbar.barbg.graphics.beginFill("rgba(255,0,0,1)").rect(-9, -17, this.sizeX-2, 2);
+  this.healthbar.fgbar = new createjs.Shape();
+  this.healthbar.fgbar.graphics.beginFill("rgba(85,255,0,1)").rect(-9, -17, this.sizeX-2, 2); 
+  this.healthbar.addChild(this.healthbar.barbg);
+  this.healthbar.addChild(this.healthbar.fgbar);
+
+  this.addChild(this.healthbar);
 
   //fire
   var img  = new Image();
@@ -226,7 +235,7 @@ creepprot.initialize = function(creepdata,i) {
   this.effectlayer.visible = false;
   this.addChild(this.effectlayer);
   game.level.creeps.container.addChild(this);
-  game.level.UI.addChild(this.healthbar.container);
+  //game.level.UI.addChild(this.healthbar.container);
 }
 
 creepprot.affect = function (tower, amount, time) {
@@ -285,6 +294,10 @@ creepprot.hit = function (dmg) {
   this.changeFilter('red',200);
 
   this.health -= dmg + Math.round(dmg*this.dmgmodifier);
+
+  var newscale = this.health/this.maxhealth
+  this.healthbar.fgbar.scaleX = newscale;
+
   if (this.health <= 0) {
       game.player.addGold(this.gold);
       game.player.addScore(this.score);
@@ -313,25 +326,9 @@ creepprot.changeFilter = function (colour, time) {
 
 }
 
-function HealthBar(creepref) {
-
-  this.creep = creepref;
-  this.container = new createjs.Container();
-  this.maxhealth = creepref.health;
-  this.barbg = new createjs.Shape();
-  this.barbg.graphics.beginFill("rgba(20,70,0,1)").rect(0, 0, this.creep.sizeX, 4);
-  this.barbg.graphics.beginFill("rgba(255,0,0,1)").rect(1, 1, this.creep.sizeX-2, 2);
-  this.fgbar = new createjs.Shape();
-  this.fgbar.graphics.beginFill("rgba(85,255,0,1)").rect(1, 1, this.creep.sizeX-2, 2);
+creepprot.updateHealthBar = function () {
   
-  this.container.addChild(this.barbg);
-  this.container.addChild(this.fgbar);
-}
 
-HealthBar.prototype.update = function () {
-  
-  var newscale = this.creep.health/this.maxhealth
-  this.fgbar.scaleX = newscale;
-  this.container.x = this.creep.x - (this.creep.sizeX-2)/2;
-  this.container.y = this.creep.y - this.creep.sizeY/2;
+  //this.healthbar.x = this.x; //- (this.sizeX-2)/2;
+  //this.healthbar.y = this.y;// - this.sizeY/2;
 }

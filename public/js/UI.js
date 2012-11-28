@@ -35,7 +35,7 @@ var UI = function() {
 
 UI.prototype.setSpritesheet = function() {
 
-  this.towerspritesheet = game.level.graphics.spritesheets.towers;
+  this.towerspritesheet = game.graphics.spritesheets.towers;
 }
 
 UI.prototype.initListeners = function() {
