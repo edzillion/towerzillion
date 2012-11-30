@@ -155,9 +155,9 @@ creepprot.initialize = function(creepdata,i) {
 
 
 
-  for (var i = 0; i < game.level.graphics.spritesheets.creeps.length; i++) {
-    if (creepdata.name == game.level.graphics.spritesheets.creeps[i].name) {
-      this.anim = new createjs.BitmapAnimation(game.level.graphics.spritesheets.creeps[i]) 
+  for (var i = 0; i < game.graphics.spritesheets.creeps.length; i++) {
+    if (creepdata.sprite == game.graphics.spritesheets.creeps[i].name) {
+      this.anim = new createjs.BitmapAnimation(game.graphics.spritesheets.creeps[i]) 
       
 
       //this.spriteSheet = game.level.graphics.spritesheets.creeps[i];

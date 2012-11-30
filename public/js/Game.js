@@ -38,8 +38,8 @@ Game.prototype.initGame = function() {
 
   this.level = new Level();
   var preload = $.when(
-    this.initialise(),
-    this.level.initialise()
+    this.loadGameData(),
+    this.level.loadLevel()
   );
 
   preload.done( function(){
@@ -112,7 +112,7 @@ Game.prototype.onSocketMessage = function(msg) {
 /**
  * Event handler for socket disconnection
  */
- Game.prototype.onSocketDisconnect = function() {
+Game.prototype.onSocketDisconnect = function() {
 
   console.log("Socket disconnected");
 }
@@ -140,10 +140,10 @@ Game.prototype.over = function() {
   game.UI.$statustext = 'GAME OVER';
 };
 
-Game.prototype.initialise = function() {
+Game.prototype.loadGameData = function() {
   
   var loadFile = $.when(
-    $.getJSON('./data/PreloadManifest.json', function(data) {
+    $.getJSON('./data/GameManifest.json', function(data) {
       return $.parseJSON(data);
     }));
 

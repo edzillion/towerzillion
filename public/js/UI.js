@@ -200,13 +200,13 @@ UI.prototype.cursorHandler = function (event) {
   }
   else {
     game.level.UI.cursor.rangecircle.visible = true;
-    if (game.level.UI.cursor.towerbmp.filters)
+    if (game.level.UI.cursor.towerbmp.hasOwnProperty('filters'))
       game.level.UI.cursor.towerbmp.filters = null;
     game.level.UI.cursor.towerbmp.updateCache();
   }
 
-  game.level.UI.cursor.x = snapx;//event.stageX;//snapx;
-  game.level.UI.cursor.y = snapy;//event.stageY;//snapy;
+  game.level.UI.cursor.x = snapx;
+  game.level.UI.cursor.y = snapy;
 };
 
 UI.prototype.cursorClickHandler = function (event) {

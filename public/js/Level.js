@@ -30,7 +30,7 @@
   this.state = 'loading';
 }
 
-Level.prototype.initialise = function () {
+Level.prototype.loadLevel = function () {
 
   var dfr = new $.Deferred();
   
@@ -182,7 +182,9 @@ Level.prototype.collectData = function (mapdata) {
   for (var i=0; i<this.waves.length; i++) {
     for (var j=0; j<this.waves[i].creeps.length; j++) {
       for (var k=0; k<game.manifest.creeps.length; k++) {
-        if (this.waves[i].creeps[j].name == game.manifest.creeps[k].name) {
+        var creepsprite = this.waves[i].creeps[j].sprite;
+        var spritename = game.manifest.creeps[k].name;
+        if (this.waves[i].creeps[j].sprite == game.manifest.creeps[k].name) {
           var creep = game.manifest.creeps[k];
           if ($.inArray(creep,this.graphicsdata) == -1)
             this.graphicsdata.push(creep);
@@ -208,7 +210,6 @@ Level.prototype.render = function (){
 
   game.stage.addChild(this.UI);
   game.stage.addChild(this.bulletcontainer);
-  this.map.render();
   this.towers.render();
 };
 

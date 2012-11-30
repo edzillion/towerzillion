@@ -55,7 +55,7 @@
     },
     "creeps": [
         {
-            "name": "half orc",
+            "name": "orc",
             "type": "creeps",
             "src": "./assets/img/orc.png",
             "framewidth": 25,
@@ -91,7 +91,7 @@
             }
         },
         {
-            "name": "green wizard",
+            "name": "green_wizard",
             "type": "creeps",
             "src": "./assets/img/wizard.png",
             "framewidth": 23,
@@ -127,7 +127,7 @@
             }
         },
         {
-            "name": "anime ranger",
+            "name": "anime_ranger",
             "type": "creeps",
             "src": "./assets/img/orc.png",
             "framewidth": 32,
@@ -163,7 +163,7 @@
             }
         },
         {
-            "name": "anime warlock",
+            "name": "anime_warlock",
             "type": "creeps",
             "src": "./assets/img/orc.png",
             "framewidth": 32,
@@ -199,7 +199,7 @@
             }
         },
         {
-            "name": "anime diplomat",
+            "name": "anime_diplomat",
             "type": "creeps",
             "src": "./assets/img/orc.png",
             "framewidth": 25,
@@ -235,7 +235,7 @@
             }
         },
         {
-            "name": "anime arcangel",
+            "name": "anime_arcangel",
             "type": "creeps",
             "src": "./assets/img/orc.png",
             "framewidth": 32,
@@ -271,7 +271,7 @@
             }
         },
         {
-            "name": "anime priestess",
+            "name": "anime_priestess",
             "type": "creeps",
             "src": "./assets/img/orc.png",
             "framewidth": 32,
@@ -307,7 +307,7 @@
             }
         },
         {
-            "name": "anime girl",
+            "name": "anime_girl",
             "type": "creeps",
             "src": "./assets/img/orc.png",
             "framewidth": 32,
@@ -343,7 +343,7 @@
             }
         },
         {
-            "name": "anime princess",
+            "name": "anime_princess",
             "type": "creeps",
             "src": "./assets/img/orc.png",
             "framewidth": 32,
@@ -379,7 +379,7 @@
             }
         },
         {
-            "name": "anime angelix",
+            "name": "anime_angelix",
             "type": "creeps",
             "src": "./assets/img/orc.png",
             "framewidth": 32,

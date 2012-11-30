@@ -56,40 +56,6 @@ mapprot.initialize = function(mapdata) {
   game.stage.setChildIndex(this, 1);
 };
 
-/*mapprot.setMap = function (mapdata){
-  this.name = mapdata.name;
-  this.gridwidth = mapdata.gridwidth;
-  this.gridheight =  mapdata.gridheight;
-  this.terraintiles = mapdata.terraintiles;
-  this.tilewidth = mapdata.tilewidth;
-  this.tileheight = mapdata.tileheight;
-  this.mapoffset = new Point (0,32);
-  this.tileoffset = new Point (this.tilewidth/2, this.tileheight/2);
-};*/
-
-/*Map.prototype.render = function () {
-
-    this.terrain.removeAllChildren();
-    for (var y=0;y<this.gridheight;y++) {
-      for (var x=0;x<this.gridwidth;x++) {
-    
-      var gridcount = x + y * this.gridwidth;
-      var frame = game.graphics.spritesheets.terrain.getFrame(this.terraintiles[gridcount]);  
-      var bmp = new createjs.Bitmap(frame.image);
-      bmp.sourceRect = frame.rect;
-      bmp.x = x*this.tilewidth;
-      bmp.y = y*this.tileheight;
-      bmp.frame = this.terraintiles[gridcount];
-
-      this.addChild(bmp);
-    }
-    this.decor.removeAllChildren();
-    for (var i=0; i<game..children.length; i++) {
-
-    }
-  }   
-};*/
-
 Map.prototype.convertGridToMapPoint = function (gridpoint) {
 
   var temppoint = new Point(gridpoint.x,gridpoint.y); 
@@ -152,13 +118,17 @@ Map.prototype.renderDecor = function () {
   for (var i=0; i<this.decordata.length; i++) {
     var decoritem = this.decordata[i];
     var sheet = {}
-    for (var i = 0; i < game.graphics.spritesheets.decor.length; i++) {
-      if (game.graphics.spritesheets.decor[i].name == decoritem.spritesheet)
-        sheet = game.graphics.spritesheets.decor[i]
+    for (var j = 0; j < game.graphics.spritesheets.decor.length; j++) {
+      if (game.graphics.spritesheets.decor[j].name == decoritem.spritesheet)
+        sheet = game.graphics.spritesheets.decor[j];
     };
     
     var img = createjs.SpriteSheetUtils.extractFrame(sheet, decoritem.spriteframe);
     var bmp = new createjs.Bitmap(img);
+
+    bmp.frame = decoritem.spriteframe;
+    bmp.sheet = sheet.name;
+
     bmp.x = decoritem.x;
     bmp.y = decoritem.y;
     bmp.regX = sheet._frameWidth/2;

@@ -8,6 +8,7 @@ function CreepModel (creepdata) {
   this.gold = creepdata.gold;
   this.score = creepdata.score;
   this.waypoints = creepdata.waypoints;
+  this.sprite = creepdata.sprite;
 }
 
 module.exports = CreepModel;

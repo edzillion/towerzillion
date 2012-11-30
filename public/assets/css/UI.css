@@ -237,3 +237,65 @@ position: absolute;
 #mapnameselector .ui-selected { background: #0073EA; color: white; }
 #mapnameselector { list-style-type: none; margin: 0; padding: 0; width: 100%; }
 #mapnameselector li { margin: 3px; padding: 0.4em; font-size: 1.2em; height: 20px; width: 90%}
+
+
+#slider-code { height: 125px; overflow:hidden; }
+#slider-code .viewport { float: left; width: 240px; height: 125px; overflow: hidden; position: relative; }
+#slider-code .buttons { display: block; margin: 30px 10px 0 0; float: left; }
+#slider-code .next { margin: 30px 0 0 10px;  }
+#slider-code .disable { visibility: hidden; }
+#slider-code .overview { list-style: none; position: absolute; padding: 0; margin: 0; left: 0; top: 0; }
+#slider-code .overview li{ float: left; margin: 0 20px 0 0; padding: 1px; height: 121px; border: 1px solid #dcdcdc; width: 236px;}
+
+#wavepanel{
+	width:640px;
+	border-style:dotted;
+	border-color:red;
+	border-width:1px;
+	padding-bottom:1px;
+}
+
+#wavepanelleft{
+	width:300px;
+	margin-top:23px;
+	padding-bottom:1px;
+	float: left;
+	border-style:dotted;
+	border-color:red;
+	border-width:1px;
+}
+
+#spriteselector {
+	float:right;
+	width:320px;
+	padding-top:10px;
+}
+
+.spriteselectoritem {
+	float:right;
+	margin:3px;
+	padding:2px;
+	border-style:dotted;
+	border-color:red;
+	border-width:1px;
+}
+
+#savewavebutton {
+	float:right;
+	margin-top:3px;
+	padding:2px;
+}
+
+#wavelist {
+	position: absolute;
+	top:400px;
+
+	border-style:dotted;
+	border-color:red;
+	border-width:1px;	
+}
+
+.wavelistitem {
+
+}
+

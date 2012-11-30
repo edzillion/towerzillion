@@ -5,8 +5,9 @@
 	<head>
 		<title>TDZillion Map Builder</title>
 		<meta charset="utf-8">
-		<link rel="stylesheet" href="./public/assets/css/UI.css">
-		<link rel="stylesheet" href="./public/assets/css/flick/jquery-ui-1.9.2.custom.css" type="text/css" />
+		<link rel="stylesheet" type="text/css" href="./public/assets/css/UI.css">
+		<link rel="stylesheet" type="text/css "href="./public/assets/css/flick/jquery-ui-1.9.2.custom.css"/>
+		<link rel="stylesheet" type="text/css" href="./public/assets/css/skin.css" />
 	</head>
 
 	<body> 
@@ -28,6 +29,7 @@
 		<script type="text/javascript" src="./public/assets/libs/easeljs-0.5.0.min.js"></script>
 		<script type="text/javascript" src="./public/assets/libs/jquery-1.8.3.js"></script>
 		<script type="text/javascript" src="./public/assets/libs/jquery-ui-1.9.2.custom.js"></script>
+		<script type="text/jacascript" src="./public/assets/libs/jquery.jcarousel.min.js"></script>
 		<script type="text/javascript" src="./public/assets/libs/Point.js"></script>
 		<script type="text/javascript" src="./public/js/Map.js"></script>
 		
@@ -70,8 +72,11 @@
 			  this.UI = new createjs.Container();
 			  this.UI.name = 'Panel Container';
 
+			  this.$decorpanel = null;
 			  this.decorpanel = null;
-			  this.wavepanel = new createjs.Container();
+			  this.$wavepanel = null;
+			  this.wavearray = Array();
+
 
 			  this.stage.addChild(this.map);
 			  this.stage.addChild(this.decor);
@@ -153,7 +158,7 @@
 
   			console.log('preloadGraphics');
 				var dfr = new $.Deferred();
-				var remaining = this.manifest.decor.length + this.manifest.terrain.length;
+				var remaining = this.manifest.decor.length + this.manifest.terrain.length + this.manifest.creeps.length;
 
 				game.graphics.spritesheets.decor = Array();
 
@@ -194,7 +199,31 @@
 			      spritesheet.name = this.data.name;
 			      spritesheet.type = this.data.type;
 
-			      game.graphics.spritesheets[spritesheet.type] = spritesheet;
+			      game.graphics.spritesheets.terrain = spritesheet;
+
+			      --remaining;
+			      if (remaining <= 0) {
+			        dfr.resolve();
+			      }
+			    }
+		    }
+
+		    for (var i=0; i<game.manifest.creeps.length; i++) { //get each of each type of tower
+	        var creep = this.manifest.creeps[i];
+	        var img = new Image();
+					img.src = creep.src.splice(1,0,'/public');
+					img.data = creep;
+					
+					img.onload = function() {
+			      var spritesheet = new createjs.SpriteSheet({
+			        images: [this],
+			        frames: {width:this.data.framewidth, height:this.data.frameheight, regX:this.data.regx, regY:this.data.regy},
+			        animations: this.data.animations
+			      });
+			      spritesheet.name = this.data.name;
+			      spritesheet.type = this.data.type;
+
+			      game.graphics.spritesheets.creeps[spritesheet.name] = spritesheet;
 
 			      --remaining;
 			      if (remaining <= 0) {
@@ -257,7 +286,6 @@
          		create_dialog.dialog("open");
 				});
 
-
 				$('#clear_button').button().click( function() {
 					game.map.decor.removeAllChildren();
 					var defrect = game.graphics.spritesheets.terrain.getFrame(0);
@@ -299,11 +327,14 @@
 							for (var i = 0; i < game.map.terrain.children.length; i++) {
 								game.map.terrain.children[i].onClick = null;
 							}
-							$('#uipanel').children().show();
-							if (!game.decorpanel)
-								game.buildDecorPanel();
-							else
+							
+							if (!game.decorpanel) {
+								game.buildDecorPanels();
+							}
+							else {
 								game.decorpanel.visible = true;
+								game.$decorpanel.children().show();
+							}
 						}
 						break;
 						case 'waves': {
@@ -312,7 +343,14 @@
 							$(this).css('border-color', 'red');
 							$(this).button("option", "label", "Mode: Waves");
 							game.decorpanel.visible = false;
-							$('#uipanel').children().hide();
+							game.$decorpanel.children().hide();
+							if (!game.$wavepanel) {
+								game.buildWavePanel();
+							}
+							else {
+								game.$wavepanel.children().show();
+								game.$wavepanel.css('border-width','1px');
+							}
 						}
 						break;
 						case 'play': {
@@ -320,7 +358,8 @@
 							$(this).css('background', '#0073EA');
 							$(this).css('border-color', '#0073EA');
 							$(this).button("option", "label", "Mode: Play");
-							//build wave panel
+							game.$wavepanel.children().hide();
+							game.$wavepanel.css('border-width','0px');
 						}
 						break;
 					}
@@ -337,7 +376,7 @@
 
 			  var dfr = new $.Deferred();
 				document.body.style.cursor='wait';
-			  
+			  var wa = game.wavearray;
 			  var savedata = {
 			  	level: {
 			  		name: mapname,
@@ -347,7 +386,8 @@
 			  		tileheight: 54,
 			  		terraintiles: game.map.getTiles(),
 			  		decordata: game.map.getDecor(),
-			  		tileused: [game.graphics.spritesheets.terrain.name]
+			  		tileused: [game.graphics.spritesheets.terrain.name],
+			  		waves: game.wavearray
 			  	}
 			  };
 
@@ -375,6 +415,8 @@
 			    
 			    game.stage.removeChild(game.map);
 			    game.map = new Map(game.mapdata);
+			    	if(game.mapdata.waves)
+			    		game.wavearray = game.mapdata.waves;
 
 			    for (var i = 0; i < game.map.terrain.children.length; i++) {
 						game.map.terrain.children[i].onClick = game.clickTile;
@@ -435,12 +477,16 @@
 				}
 			};
 
-
 			//DECOR ############################################################################
 
-			LevelBuilder.prototype.buildDecorPanel = function () {
+			LevelBuilder.prototype.buildDecorPanels = function () {
 
 				this.decorpanel = new createjs.Container();
+				var div = document.createElement('div');
+				this.$decorpanel = $(div);
+
+  			this.$decorpanel.appendTo('#uipanel');
+  			this.$decorpanel.attr('id','decorpanel');
 
 				//buttons
 				var placebutton = document.createElement('div');
@@ -451,7 +497,7 @@
 					game.stage.onMouseMove = null;
 		  		game.stage.onClick = null;
 			  });
-				$(placebutton).appendTo('#uipanel');
+				$(placebutton).appendTo(this.$decorpanel);
 
   				//buttons
 				var rembutton = document.createElement('div');
@@ -462,7 +508,7 @@
 					game.stage.onMouseMove = null;
 		  		game.stage.onClick = game.removeClickHandler;
 			  });
-				$(rembutton).appendTo('#uipanel');
+				$(rembutton).appendTo(this.$decorpanel);
 
 			 	var smallanchor = new Point(700,120);
 			 	var medanchor = new Point(700,180);
@@ -566,6 +612,181 @@
   				}	
 			};
 
+			// WAVE ###############################################################################
+
+			LevelBuilder.prototype.buildWavePanel = function () {
+
+				var div = document.createElement('div');
+				this.$wavepanel = $(div);
+  			this.$wavepanel.appendTo('#uipanel');
+  			this.$wavepanel.attr('id','wavepanel');
+
+  			htmlstring = '';
+  			htmlstring += '<label for="numcreeps">Num Creeps</label><input id="numcreeps" name="numcreeps"/>';
+    		htmlstring += '<label for="wavetiming">Creep Gap(ms)</label><input id="wavetiming" name="wavetiming"/>';
+    		htmlstring += '<label for="wavegold">Wave Gold</label><input id="wavegold" name="wavegold"/>';
+    		htmlstring += '<div id="wavepanelleft">';
+    		htmlstring += '<label for="creepname">Creep Name</label><input id="creepname" name="creepname"/>';
+    		htmlstring += '<label for="creepsprite">Creep Sprite</label><input id="creepsprite" name="creepsprite"/>';
+    		htmlstring += '<label for="creephp">Creep HP</label><input id="creephp" name="creephp"/>';
+    		htmlstring += '<label for="creepspeed">Creep Speed</label><input id="creepspeed" name="creepspeed"/>';
+    		htmlstring += '<label for="creepxp">Creep XP</label><input id="creepxp" name="creepxp"/>';
+    		htmlstring += '<label for="creepgold">Creep Gold</label><input id="creepgold" name="creepgold"/>';
+    		htmlstring += '<label for="creepscore">Creep Score</label><input id="creepscore" name="creepscore"/>';
+    		
+    		htmlstring += '</div>';
+
+    		this.$wavepanel.html(htmlstring);
+
+				this.$wavepanel.find("label").button();
+				this.$wavepanel.find("input").height('20px');
+  			$('#numcreeps').spinner().attr({
+  				maxlength: 3,
+  				min: 10,
+  				required: 'required',
+  				value: 10
+  			}).width('35px');
+    		$('#wavetiming').spinner().attr({
+  				maxlength: 4,
+  				min: 50,
+  				required: 'required',
+  				value: 1000,
+  				step:10
+  			}).width('45px');
+    		$('#creephp').spinner().attr({
+  				maxlength: 5,
+  				min: 1,
+  				required: 'required',
+  				value: 1,
+  			}).width('40px');
+    		$('#creepspeed').spinner().attr({
+  				maxlength: 3,
+  				min: 1,
+  				required: 'required',
+  				value: 1
+  			}).width('35px');
+    		$('#creepxp').spinner().attr({
+  				maxlength: 5,
+  				min: 1,
+  				required: 'required',
+  				value: 1
+  			}).width('45px');
+    		$('#creepgold').spinner().attr({
+  				maxlength: 5,
+  				min: 1,
+  				required: 'required',
+  				value: 1
+  			}).width('45px');
+    		$('#creepscore').spinner().attr({
+  				maxlength: 5,
+  				min: 1,
+  				required: 'required',
+  				value: 1
+  			}).width('45px');
+    		$('#wavegold').spinner().attr({
+  				maxlength: 5,
+  				min: 1,
+  				required: 'required',
+  				value: 10
+  			}).width('35px');
+
+				var spriteselector = document.createElement('div');
+  			$(spriteselector).appendTo('#wavepanel');
+  			$(spriteselector).attr('id','spriteselector');
+
+  			var spriteselectorhtml = '<div id="spriteselector">';
+  			var selectorimages = {};
+  			for (var i = 0; i < game.manifest.creeps.length; i++) {
+  				var creep = game.manifest.creeps[i];
+  				var creepimg =  createjs.SpriteSheetUtils.extractFrame(game.graphics.spritesheets.creeps[creep.name], creep.animations['down'][0]);
+					selectorimages[creep.name] = creepimg;
+					spriteselectorhtml += '<div class="spriteselectoritem" id="'+creep.name+'">'+creep.name+'</div>';
+				}
+				spriteselectorhtml += '</div>';
+				$(spriteselector).html(spriteselectorhtml);
+
+				$(spriteselector).find('.spriteselectoritem').each( function () {
+					var tempimg = selectorimages[$(this).text()];
+					$(this).click( function () {
+						$('#creepsprite').attr('value',$(this).attr('id'));
+					});
+					$(this).append(tempimg);
+				});
+
+				var div = document.createElement('div');
+				this.$savewavebutton = $(div);
+				this.$savewavebutton.text('Save Wave');
+				this.$savewavebutton.attr('id','savewavebutton');
+				this.$savewavebutton.appendTo('#spriteselector');
+				this.$savewavebutton.button();
+				this.$savewavebutton.click( function() {
+
+					var waveobject = {
+						numcreeps: $('#numcreeps').val(),
+						timing: $('#wavetiming').val(),
+						wavegold: $('#wavegold').val(),
+						creeps: Array()
+					};
+					for (var i = 0; i < waveobject.numcreeps; i++) {
+					 	var creepobject = {
+					 		name: $('#creepname').val(),
+					 		sprite: $('#creepsprite').val(),
+					 		health: $('#creephp').val(),
+					 		speed: $('#creepspeed').val(),
+					 		xp: $('#creepxp').val(),
+					 		gold: $('#creepgold').val(),
+					 		score: $('#creepscore').val(),
+
+					 	};
+					 	waveobject.creeps.push(creepobject);
+					}
+					game.wavearray.push(waveobject);
+					game.renderWaveList();					
+				});
+    	
+				var div = document.createElement('div');
+				this.$wavelist = $(div);
+    		this.$wavelist.attr('id','wavelist');
+    		this.$wavelist.appendTo(this.$wavepanel);
+    		this.$wavelist.html('<table border="1" id="wavesortable"><tr><th>#</th><th>Creeps</th><th>Wave Gap</th><th>Wave Gold</th><th>Creep Sprite</th><th>Creep Name</th><th>HP</th><th>Speed</th><th>XP</th><th>Gold</th><th>Score</th></tr></table>');
+		   	game.renderWaveList();
+			};
+
+			LevelBuilder.prototype.renderWaveList = function () {
+				
+				var wavehtml = '';
+
+				for (var i = 0; i < this.wavearray.length; i++) {
+					var wave = this.wavearray[i];
+					
+					wavehtml += '<tr>';
+					wavehtml += '<td class="wavelistitem">'+(i+1)+'</td>';
+					wavehtml += '<td class="wavelistitem">'+wave.numcreeps+'</td>';
+					wavehtml += '<td class="wavelistitem">'+wave.timing+'</td>';
+					wavehtml += '<td class="wavelistitem">'+wave.wavegold+'</td>';
+					wavehtml += '<td class="wavelistitem">'+wave.creeps[0].sprite+'</td>';
+					wavehtml += '<td class="wavelistitem">'+wave.creeps[0].name+'</td>';
+					wavehtml += '<td class="wavelistitem">'+wave.creeps[0].health+'</td>';
+					wavehtml += '<td class="wavelistitem">'+wave.creeps[0].speed+'</td>';
+					wavehtml += '<td class="wavelistitem">'+wave.creeps[0].xp+'</td>';
+					wavehtml += '<td class="wavelistitem">'+wave.creeps[0].gold+'</td>';
+					wavehtml += '<td class="wavelistitem">'+wave.creeps[0].score+'</td>';
+					wavehtml += '<td class="wavelistitem"><div class="remwaverow">Remove</div></td>';
+					wavehtml += '</tr>';
+				}
+				$('#wavesortable').find("tr:gt(0)").remove();
+				$('#wavesortable').append(wavehtml);		
+
+    		/*$('#wavesortable').sortable();
+				$('#wavesortable').disableSelection();*/
+
+				$('#wavesortable').find('.remwaverow').click( function () {
+					$(this).closest('tr').remove();
+					game.wavearray.splice($(this).closest("tr")[0].rowIndex,1);
+				});
+    	};
+
+    	
 			// GENERAL ############################################################################
 
 			LevelBuilder.prototype.cursorHandler = function (event) {

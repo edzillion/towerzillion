@@ -26,6 +26,7 @@ gamedata = {
     gridheight: 10,
     tilewidth: 64,
     tileheight: 54,
+    decordata: [],
     terraintiles: [1,1,1,0,1,1,1,1,1,7,3,3,3,3,3,3,3,3,3,1,7,0,1,1,1,0,1,1,3,1,7,3,3,3,3,3,3,7,3,1,1,3,1,1,13,13,3,1,3,1,1,3,1,3,13,13,3,1,3,1,1,3,1,3,3,3,3,1,3,1,1,3,1,7,1,1,1,1,3,7,1,3,3,3,3,3,3,3,3,1,1,1,1,1,1,1,1,1,7,0],
     towersused: ['water','melee','poison','magic'],
     tilesused: ['64x54'],
@@ -37,7 +38,8 @@ gamedata = {
   }
 };
 
-//var gamemodel = new GameModel(gamedata);
+var gamemodel = new GameModel(gamedata);
+
 
 var savegame = function (leveldata) {
   db.maps.save(leveldata, function(err, saved) {
@@ -50,7 +52,8 @@ var savegame = function (leveldata) {
       return true;
     }
   });
-}
+};
+savegame(gamemodel);
 
 var savemap = function (mapdata) {
   db.savedmaps.save(mapdata, function(err, saved) {

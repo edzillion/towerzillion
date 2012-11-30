@@ -12,6 +12,7 @@ function LevelModel(leveldata) {
   this.terraintiles = leveldata.terraintiles;
   this.towersused = leveldata.towersused;
   this.tilesused = leveldata.tilesused;
+  this.decordata = leveldata.decordata;
 
   this.waves = Array();
 
@@ -23,6 +24,7 @@ function LevelModel(leveldata) {
       healthcounter = i+1*i+1;
       var tempcreepdata = {
         name: 'wizard',
+        sprite: 'green_wizard',
         health: healthcounter,
         defense: 1,
         speed: speedcounter,
@@ -31,7 +33,6 @@ function LevelModel(leveldata) {
         score: Math.round(healthcounter/10)+i+1
       };
       speedcounter += .1;
-
       var data = {
         creepdata: tempcreepdata,
         numcreeps: 10 + i,              
